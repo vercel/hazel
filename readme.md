@@ -6,6 +6,7 @@ This project lets you deploy an update server for [Electron](https://electron.at
 - Refreshes the cache every 15 minutes
 - When asked for an update, it returns the link to the GitHub asset directly
 - Supports Windows and macOS apps
+- Allows downloading the latest release for a platform: e.g. `/download/darwin`
 
 ## Usage
 
