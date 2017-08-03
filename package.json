@@ -5,7 +5,8 @@
   "scripts": {
     "start": "micro",
     "dev": "micro-dev",
-    "test": "xo"
+    "test": "xo",
+    "precommit": "lint-staged"
   },
   "license": "MIT",
   "repository": "leo/electron-updates",
