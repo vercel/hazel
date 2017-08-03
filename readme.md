@@ -40,6 +40,10 @@ That's all! :tada:
 2. Then move into the directory of your clone: `cd hazel`
 3. Finally, run the development server like this: `npm run dev`
 
+## Credits
+
+Huge thanks to my ([@leo](https://github.com/leo)'s) friend [Andy](http://twitter.com/andybitz_), who suggested the name "Hazel" (since the software that handles the auto updating inside [Electron](https://electron.atom.io) is called "Squirrel") and [Matheus](https://twitter.com/matheusfrndes) for collecting ideas with me.
+
 ## Author
 
 Leo Lamprecht ([@notquiteleo](https://twitter.com/notquiteleo)) - [▲ZEIT](https://zeit.co)
