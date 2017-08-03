@@ -7,12 +7,11 @@ Lighweight update server for Electron apps published with GitHub Releases
 Firstly, ensure that [Now CLI](https://zeit.co/download) is installed, then deploy an update server like this:
 
 ```bash
-now leo/electron-updates
+now leo/electron-updates -e NODE_ENV="production"
 ```
 
 Now you'll be asked for the value of three environment variables:
 
-- `NODE_ENV`: Should be set to "production" to disable the installation of the `devDependencies`
 - `ACCOUNT`: Your username or organisation name on GitHub
 - `REPOSITORY`: The name of the repository to pull releases from
 
