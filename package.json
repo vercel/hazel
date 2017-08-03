@@ -19,6 +19,11 @@
       "unicorn/no-process-exit": 0
     }
   },
+  "now": {
+    "env": [
+      "REPO"
+    ]
+  },
   "lint-staged": {
     "*.js": [
       "npm test",
