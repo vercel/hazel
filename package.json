@@ -1,0 +1,16 @@
+{
+  "name": "electron-updates",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "micro",
+    "dev": "micro-dev"
+  },
+  "license": "MIT",
+  "repository": "leo/electron-updates",
+  "dependencies": {
+    "micro": "8.0.1"
+  },
+  "devDependencies": {
+    "micro-dev": "1.1.0"
+  }
+}
