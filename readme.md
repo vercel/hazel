@@ -1,6 +1,10 @@
 # electron-updates
 
-Lighweight update server for Electron apps published with GitHub Releases
+This project lets you deploy an update server for [Electron](https://electron.atom.io) apps with ease: You only need to run a single command and fill out two text fields. The result will be faster and more lightweight than any other solution out there!
+
+- Pulls the latest release data from [GitHub Releases](https://help.github.com/articles/creating-releases/) and caches it
+- Refreshes the cache every 15 minutes
+- When asked for an update, it returns the link to the GitHub asset directly
 
 ## Usage
 
