@@ -22,7 +22,8 @@
   },
   "now": {
     "env": [
-      "REPO"
+      "ACCOUNT",
+      "REPOSITORY"
     ]
   },
   "lint-staged": {
