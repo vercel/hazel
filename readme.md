@@ -1,4 +1,4 @@
-# hazel
+# Hazel
 
 This project lets you deploy an update server for [Electron](https://electron.atom.io) apps with ease: You only need to run a single command and fill out two text fields. The result will be faster and more lightweight than any other solution out there!
 
