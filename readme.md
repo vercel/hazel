@@ -3,7 +3,9 @@
 [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
 [![Slack Channel](http://zeit-slackin.now.sh/badge.svg)](https://zeit.chat/)
 
-This project lets you deploy an update server for [Electron](https://electron.atom.io) apps with ease: You only need to run a single command and fill out two text fields. The result will be faster and more lightweight than any other solution out there!
+This project lets you deploy an update server for [Electron](https://electron.atom.io) apps built on top of [micro](https://github.com/zeit/micro): You only need to run a single command and fill out two text fields.
+
+The result will be faster and more lightweight than any other solution out there! :rocket:
 
 - Pulls the latest release data from [GitHub Releases](https://help.github.com/articles/creating-releases/) and caches it
 - Refreshes the cache every 15 minutes
@@ -13,7 +15,7 @@ This project lets you deploy an update server for [Electron](https://electron.at
 
 ## Usage
 
-Firstly, ensure that [Now CLI](https://zeit.co/download) is installed, then deploy an update server like this:
+Firstly ensure that [Now CLI](https://zeit.co/download) is installed, then deploy an update server like this:
 
 ```bash
 now -e NODE_ENV="production" zeit/hazel
