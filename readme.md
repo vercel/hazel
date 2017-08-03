@@ -8,7 +8,7 @@ This project lets you deploy an update server for [Electron](https://electron.at
 The result will be faster and more lightweight than any other solution out there! :rocket:
 
 - Pulls the latest release data from [GitHub Releases](https://help.github.com/articles/creating-releases/) and caches it
-- Refreshes the cache every 15 minutes (use `INTERVAL` environment value for custom number of minutes)
+- Refreshes the cache every 15 minutes (use `INTERVAL` environment value for custom number of minutes - [more](https://developer.github.com/changes/2012-10-14-rate-limit-changes/))
 - When asked for an update, it returns the link to the GitHub asset directly
 - Supports Windows and macOS apps
 - Allows downloading the latest release for a platform: e.g. `/download/darwin`
