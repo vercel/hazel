@@ -5,6 +5,7 @@ This project lets you deploy an update server for [Electron](https://electron.at
 - Pulls the latest release data from [GitHub Releases](https://help.github.com/articles/creating-releases/) and caches it
 - Refreshes the cache every 15 minutes
 - When asked for an update, it returns the link to the GitHub asset directly
+- Supports Windows and macOS apps
 
 ## Usage
 
