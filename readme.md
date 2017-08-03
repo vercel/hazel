@@ -28,3 +28,13 @@ autoUpdater.setFeedURL(feedURL)
 ```
 
 That's all! :tada:
+
+## Contributing
+
+1. [Fork](https://help.github.com/articles/fork-a-repo/) this repository to your own GitHub account and then [clone](https://help.github.com/articles/cloning-a-repository/) it to your local device
+2. Then move into the directory of your clone: `cd electron-updates`
+3. Finally, run the development server like this: `npm run dev`
+
+## Author
+
+Leo Lamprecht ([@notquiteleo](https://twitter.com/notquiteleo)) - [▲ZEIT](https://zeit.co)
