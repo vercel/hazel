@@ -7,7 +7,7 @@ Lighweight update server for Electron apps published with GitHub Releases
 Firstly, ensure that [Now CLI](https://zeit.co/download) is installed, then deploy an update server like this:
 
 ```bash
-now leo/electron-updates -e NODE_ENV="production"
+now -e NODE_ENV="production" leo/electron-updates
 ```
 
 Now you'll be asked for the value of three environment variables:
