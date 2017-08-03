@@ -1,4 +1,4 @@
-# electron-updates
+# hazel
 
 This project lets you deploy an update server for [Electron](https://electron.atom.io) apps with ease: You only need to run a single command and fill out two text fields. The result will be faster and more lightweight than any other solution out there!
 
@@ -13,7 +13,7 @@ This project lets you deploy an update server for [Electron](https://electron.at
 Firstly, ensure that [Now CLI](https://zeit.co/download) is installed, then deploy an update server like this:
 
 ```bash
-now -e NODE_ENV="production" leo/electron-updates
+now -e NODE_ENV="production" zeit/hazel
 ```
 
 Now you'll be asked for the value of three environment variables:
@@ -37,7 +37,7 @@ That's all! :tada:
 ## Contributing
 
 1. [Fork](https://help.github.com/articles/fork-a-repo/) this repository to your own GitHub account and then [clone](https://help.github.com/articles/cloning-a-repository/) it to your local device
-2. Then move into the directory of your clone: `cd electron-updates`
+2. Then move into the directory of your clone: `cd hazel`
 3. Finally, run the development server like this: `npm run dev`
 
 ## Author
