@@ -1,6 +1,7 @@
 {
   "name": "electron-updates",
   "version": "1.0.0",
+  "main": "lib/index.js",
   "scripts": {
     "start": "micro",
     "dev": "micro-dev"
@@ -8,7 +9,13 @@
   "license": "MIT",
   "repository": "leo/electron-updates",
   "dependencies": {
-    "micro": "8.0.1"
+    "fetch": "1.1.0",
+    "finalhandler": "1.0.3",
+    "micro": "8.0.1",
+    "ms": "2.0.0",
+    "node-fetch": "1.7.1",
+    "router": "1.3.1",
+    "semver": "5.4.1"
   },
   "devDependencies": {
     "micro-dev": "1.1.0"
