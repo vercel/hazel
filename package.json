@@ -25,6 +25,11 @@
     "env": [
       "ACCOUNT",
       "REPOSITORY"
+    ],
+    "files": [
+      "lib",
+      "package-lock.json",
+      "package.json"
     ]
   },
   "lint-staged": {
