@@ -42,6 +42,30 @@ autoUpdater.setFeedURL(feed)
 
 That's it! :white_check_mark:
 
+## Routes
+
+### /
+
+Automatically detects the platform/OS of the visitor by parsing the user agent and then downloads the appropiate copy of your application.
+
+If the latest version of the application wasn't yet pulled from [GitHub Releases](https://help.github.com/articles/creating-releases/), it will return a message and the status code `404`. The same happens if the latest release doesn't contain a file for the detected platform.
+
+### /download
+
+Does the same as `/` (basically an alias).
+
+### /download/:platform
+
+Accepts a platform (like "darwin" or "win32") to download the appropiate copy your app for. I generally suggest using either `process.platform` ([more](https://nodejs.org/api/process.html#process_process_platform)) or `os.platform()` ([more](https://nodejs.org/api/os.html#os_os_platform)) to retrieve this string.
+
+If the cache isn't filled yet or doesn't contain a download link for the specified platform, it will respond like `/`.
+
+### /update/:platform/:version
+
+Checks if there is an update avaiable by reading from the cache.
+
+If the latest version of the application wasn't yet pulled from [GitHub Releases](https://help.github.com/articles/creating-releases/), it will return the `204` status code. The same happens if the latest release doesn't contain a file for the specified platform.
+
 ## Contributing
 
 1. [Fork](https://help.github.com/articles/fork-a-repo/) this repository to your own GitHub account and then [clone](https://help.github.com/articles/cloning-a-repository/) it to your local device
