@@ -13,7 +13,7 @@ The result will be faster and more lightweight than any other solution out there
 - When asked for an update, it returns the link to the GitHub asset directly (saves bandwidth)
 - Supports macOS and Windows apps
 - Let's you download the latest release for a platform: e.g. `/download/darwin`
-- Scales very nicely across multiple [Now](https://zeit.co/now) instances, since each instance pulls its own data
+- Scales very nicely across multiple [Now](https://zeit.co/now) instances
 
 ## Usage
 
