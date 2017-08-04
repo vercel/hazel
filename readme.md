@@ -5,7 +5,7 @@
 
 This project lets you deploy an update server for [Electron](https://electron.atom.io) apps with ease: You only need to run a single command and fill out two text fields.
 
-The result will be faster and more lightweight than any other solution out there (~200 LOC)! :rocket:
+The result will be faster and more lightweight than any other solution out there! :rocket:
 
 - Pulls the latest release data from [GitHub Releases](https://help.github.com/articles/creating-releases/) and caches it in memory
 - Built on top of [micro](https://github.com/zeit/micro), the tiniest HTTP framework for Node.js
