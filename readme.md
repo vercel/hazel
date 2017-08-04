@@ -23,7 +23,7 @@ With [Now CLI](https://zeit.co/download), you can deploy an update server like t
 now -e NODE_ENV="production" zeit/hazel
 ```
 
-You'll be asked for the value of three environment variables:
+You'll be asked for the value of two environment variables:
 
 - `ACCOUNT`: Your username or organisation name on GitHub
 - `REPOSITORY`: The name of the repository to pull releases from
