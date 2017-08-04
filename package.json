@@ -1,6 +1,6 @@
 {
   "name": "hazel",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "main": "lib/index.js",
   "scripts": {
     "start": "micro",
@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "fetch": "1.1.0",
-    "finalhandler": "1.0.3",
+    "finalhandler": "1.0.4",
     "micro": "8.0.1",
     "ms": "2.0.0",
     "node-fetch": "1.7.1",
