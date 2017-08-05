@@ -10,7 +10,7 @@ The result will be faster and more lightweight than any other solution out there
 
 - Built on top of [micro](https://github.com/zeit/micro), the tiniest HTTP framework for Node.js
 - Pulls the latest release data from [GitHub Releases](https://help.github.com/articles/creating-releases/) and caches it in memory
-- Refreshes the cache every **15 minutes** (use `INTERVAL` environment value for custom number of minutes - [more](https://developer.github.com/changes/2012-10-14-rate-limit-changes/))
+- Refreshes the cache every **15 minutes** (custom interval possible)
 - When asked for an update, it returns the link to the GitHub asset directly (saves bandwidth)
 - Supports **macOS** and **Windows** apps
 - Scales very nicely across multiple [Now](https://zeit.co/now) instances
@@ -42,6 +42,13 @@ autoUpdater.setFeedURL(feed)
 That's it! :white_check_mark:
 
 From now on, the auto updater will ask your Hazel deployment for updates!
+
+## Options
+
+The following environment variables can be used optionally:
+
+- `INTERVAL`: Refreshes the cache every x minutes ([restrictions](https://developer.github.com/changes/2012-10-14-rate-limit-changes/))
+- `PRE`: When defined with a value of `1`, only prereleases will be cached
 
 ## Routes
 
