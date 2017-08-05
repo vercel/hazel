@@ -48,6 +48,7 @@ From now on, the auto updater will ask your Hazel deployment for updates!
 The following environment variables can be used optionally:
 
 - `INTERVAL`: Refreshes the cache every x minutes ([restrictions](https://developer.github.com/changes/2012-10-14-rate-limit-changes/))
+- `NODE_ENV`: Should always be "production", which ensures that only required dependencies are installed
 - `PRE`: When defined with a value of `1`, only prereleases will be cached
 
 ## Routes
