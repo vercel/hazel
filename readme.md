@@ -28,7 +28,7 @@ You'll be asked for the value of two environment variables:
 - `ACCOUNT`: Your username or organisation name on GitHub
 - `REPOSITORY`: The name of the repository to pull releases from
 
-Once it's deployed, paste the deployment address into your auto updater code:
+Once it's deployed, paste the deployment address into your code (please keep in mind that upates should only occur in the production version of the app, not while developing):
 
 ```js
 const { app, autoUpdater } = require('electron')
