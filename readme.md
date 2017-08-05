@@ -10,7 +10,7 @@ The result will be faster and more lightweight than any other solution out there
 
 - Built on top of [micro](https://github.com/zeit/micro), the tiniest HTTP framework for Node.js
 - Pulls the latest release data from [GitHub Releases](https://help.github.com/articles/creating-releases/) and caches it in memory
-- Refreshes the cache every **15 minutes** (custom interval possible)
+- Refreshes the cache every **15 minutes** (custom interval [possible](#options))
 - When asked for an update, it returns the link to the GitHub asset directly (saves bandwidth)
 - Supports **macOS** and **Windows** apps
 - Scales very nicely across multiple [Now](https://zeit.co/now) instances
