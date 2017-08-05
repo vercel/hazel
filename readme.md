@@ -32,10 +32,9 @@ Once it's deployed, paste the deployment address into your auto updater code:
 
 ```js
 const { app, autoUpdater } = require('electron')
-const { resolve } = require('url')
 
 const server = <your-deployment-url>
-const feed = resolve(server, 'update', process.platform, app.getVersion())
+const feed = `${server}/update/${process.platform}/${app.getVersion()}`
 
 autoUpdater.setFeedURL(feed)
 ```
