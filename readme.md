@@ -25,7 +25,7 @@ now -e NODE_ENV="production" zeit/hazel
 
 You'll be asked for the value of two environment variables:
 
-- `ACCOUNT`: Your username or organisation name on GitHub
+- `GITHUB_USERNAME_OR_ORG`: Your username or organisation name on GitHub
 - `REPOSITORY`: The name of the repository to pull releases from
 
 Once it's deployed, paste the deployment address into your code (please keep in mind that updates should only occur in the production version of the app, not while developing):
