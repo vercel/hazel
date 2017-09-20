@@ -3,7 +3,7 @@
   "version": "1.2.1",
   "main": "lib/index.js",
   "scripts": {
-    "start": "micro -p 4000",
+    "start": "micro -p ${PORT:-3000}",
     "dev": "micro-dev",
     "test": "xo",
     "precommit": "lint-staged"
