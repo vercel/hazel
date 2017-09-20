@@ -3,7 +3,7 @@
   "version": "1.2.0",
   "main": "lib/index.js",
   "scripts": {
-    "start": "micro",
+    "start": "micro -p 4000",
     "dev": "micro-dev",
     "test": "xo",
     "precommit": "lint-staged"
