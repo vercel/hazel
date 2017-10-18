@@ -3,3 +3,9 @@ node_modules
 
 # logs
 npm-debug.log
+
+# Docker
+Dockerfile
+.dockerignore
+docker-*
+env.list
