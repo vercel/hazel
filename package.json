@@ -40,22 +40,22 @@
     ]
   },
   "dependencies": {
-    "express-useragent": "1.0.7",
+    "express-useragent": "1.0.8",
     "fetch": "1.1.0",
-    "finalhandler": "1.0.4",
-    "micro": "8.0.3",
+    "finalhandler": "1.1.0",
+    "micro": "9.0.0",
     "ms": "2.0.0",
-    "node-fetch": "1.7.2",
-    "router": "1.3.1",
+    "node-fetch": "1.7.3",
+    "router": "1.3.2",
     "semver": "5.4.1",
     "stream-to-string": "1.1.0"
   },
   "devDependencies": {
-    "eslint-config-prettier": "2.3.0",
+    "eslint-config-prettier": "2.6.0",
     "husky": "0.14.3",
-    "lint-staged": "4.0.3",
-    "micro-dev": "1.2.1",
-    "prettier": "1.5.3",
+    "lint-staged": "4.3.0",
+    "micro-dev": "1.3.0",
+    "prettier": "1.7.4",
     "xo": "0.18.2"
   }
 }
