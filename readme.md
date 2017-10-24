@@ -28,8 +28,6 @@ You'll be asked for the value of two environment variables:
 - `ACCOUNT`: Your username or organisation name on GitHub
 - `REPOSITORY`: The name of the repository to pull releases from
 - `PORT`: The port on which Hazel should run
-- `TOKEN`: Your GitHub token (for private repos)
-- `URL` or `NOW_URL`: The server's URL (for private repos - when running on [Now](https://zeit.co/now), this field is filled with the URL of the deployment automatically)
 
 Once it's deployed, paste the deployment address into your code (please keep in mind that updates should only occur in the production version of the app, not while developing):
 
@@ -52,7 +50,9 @@ The following environment variables can be used optionally:
 
 - `INTERVAL`: Refreshes the cache every x minutes ([restrictions](https://developer.github.com/changes/2012-10-14-rate-limit-changes/))
 - `NODE_ENV`: Should always be "production", which ensures that only required dependencies are installed
-- `PRE`: When defined with a value of `1`, only prereleases will be cached
+- `PRE`: When defined with a value of `1`, only pre-releases will be cached
+- `TOKEN`: Your GitHub token (for private repos)
+- `URL`: The server's URL (for private repos - when running on [Now](https://zeit.co/now), this field is filled with the URL of the deployment automatically)
 
 ## Statistics
 
