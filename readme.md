@@ -28,8 +28,8 @@ You'll be asked for the value of two environment variables:
 - `ACCOUNT`: Your username or organisation name on GitHub
 - `REPOSITORY`: The name of the repository to pull releases from
 - `PORT`: The port on which Hazel should run
-- `GH_TOKEN`: GitHub token (used for private repository)
-- `PRIVATE_BASE_URL`: Server base url (used for private repository)
+- `TOKEN`: GitHub token (used for private repository)
+- `URL` or `NOW_URL`: Server base url (used for private repository)
 
 Once it's deployed, paste the deployment address into your code (please keep in mind that updates should only occur in the production version of the app, not while developing):
 
