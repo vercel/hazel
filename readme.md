@@ -35,7 +35,7 @@ Once it's deployed, paste the deployment address into your code (please keep in 
 const { app, autoUpdater } = require('electron')
 
 const server = <your-deployment-url>
-const feed = `${server}/update/${process.platform}/${app.getVersion()}`
+const feed = `${server}/update/${process.platform}/${process.platform}/${app.getVersion()}`
 
 autoUpdater.setFeedURL(feed)
 ```
@@ -72,19 +72,19 @@ If the latest version of the application wasn't yet pulled from [GitHub Releases
 
 Does the same as `/` (basically an alias).
 
-### /download/:platform
+### /download/:platform/:arch
 
-Accepts a platform (like "darwin" or "win32") to download the appropriate copy your app for. I generally suggest using either `process.platform` ([more](https://nodejs.org/api/process.html#process_process_platform)) or `os.platform()` ([more](https://nodejs.org/api/os.html#os_os_platform)) to retrieve this string.
+Accepts a platform (like "darwin" or "win32") and an architecture (like "ia32", or "x64") to download the appropriate copy your app for. I generally suggest using either `process.platform()` ([more](https://nodejs.org/api/process.html#process_process_platform)) and `process.arch()` ([more](https://nodejs.org/api/process.html#process_process_arch)) to retrieve these strings.
 
-If the cache isn't filled yet or doesn't contain a download link for the specified platform, it will respond like `/`.
+If :arch parameter is missing, `x64` is used by default.
 
-### /update/:platform/:version
+### /update/:platform/:arch/:version
 
 Checks if there is an update available by reading from the cache.
 
-If the latest version of the application wasn't yet pulled from [GitHub Releases](https://help.github.com/articles/creating-releases/), it will return the `204` status code. The same happens if the latest release doesn't contain a file for the specified platform.
+If the latest version of the application wasn't yet pulled from [GitHub Releases](https://help.github.com/articles/creating-releases/), it will return the `204` status code. The same happens if the latest release doesn't contain a file for the specified platform/arch.
 
-### /update/win32/:version/RELEASES
+### /update/win32/:arch/:version/RELEASES
 
 This endpoint was specifically crafted for the Windows platform (called "win32" [in Node.js](https://nodejs.org/api/process.html#process_process_platform)).
 
