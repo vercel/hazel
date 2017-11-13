@@ -47,8 +47,7 @@
     "ms": "2.0.0",
     "node-fetch": "1.7.3",
     "router": "1.3.2",
-    "semver": "5.4.1",
-    "stream-to-string": "1.1.0"
+    "semver": "5.4.1"
   },
   "devDependencies": {
     "eslint-config-prettier": "2.7.0",
