@@ -1,8 +1,7 @@
 /* eslint-disable no-new */
-/* global describe, it, expect, jasmine */
+/* global describe, it, expect */
 const Cache = require('../lib/cache')
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000
 describe('Cache', () => {
   it('should throw when account is not defined', () => {
     expect(() => {
