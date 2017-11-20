@@ -6,6 +6,7 @@
     "start": "micro -p ${PORT:-3000} lib/server.js",
     "dev": "micro-dev lib/server.js",
     "test": "xo",
+    "testonly": "jest",
     "precommit": "lint-staged"
   },
   "license": "MIT",
@@ -43,12 +44,14 @@
     "express-useragent": "1.0.8",
     "fetch": "1.1.0",
     "finalhandler": "1.1.0",
+    "jest": "21.2.1",
     "micro": "9.0.1",
     "ms": "2.0.0",
     "node-fetch": "1.7.3",
     "router": "1.3.2",
     "semver": "5.4.1",
-    "stream-to-string": "1.1.0"
+    "stream-to-string": "1.1.0",
+    "test-listen": "1.0.2"
   },
   "devDependencies": {
     "eslint-config-prettier": "2.7.0",
