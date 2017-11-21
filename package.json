@@ -5,8 +5,7 @@
   "scripts": {
     "start": "micro -p ${PORT:-3000} lib/server.js",
     "dev": "micro-dev lib/server.js",
-    "test": "xo",
-    "testonly": "jest",
+    "test": "xo && jest",
     "precommit": "lint-staged"
   },
   "license": "MIT",
