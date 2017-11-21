@@ -25,23 +25,40 @@ describe('Cache', () => {
   })
 
   it('should run without errors', () => {
-    const config = { account: 'zeit', repository: 'hyper' }
+    const config = {
+      account: 'zeit',
+      repository: 'hyper',
+      token: process.env.TOKEN
+    }
+
     new Cache(config)
   })
 
   it('should refresh the cache', async () => {
-    const config = { account: 'zeit', repository: 'hyper' }
+    const config = {
+      account: 'zeit',
+      repository: 'hyper',
+      token: process.env.TOKEN
+    }
+
     const cache = new Cache(config)
     await cache.refreshCache()
     const storage = cache.loadCache()
+
     expect(typeof storage.version).toBe('string')
     expect(typeof storage.platforms).toBe('object')
   })
 
   it('should set platforms correctly', async () => {
-    const config = { account: 'zeit', repository: 'hyper' }
+    const config = {
+      account: 'zeit',
+      repository: 'hyper',
+      token: process.env.TOKEN
+    }
+
     const cache = new Cache(config)
     await cache.refreshCache()
+
     const storage = cache.loadCache()
     console.log(storage.platforms.darwin)
   })
