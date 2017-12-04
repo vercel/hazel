@@ -90,15 +90,15 @@ This endpoint was specifically crafted for the Windows platform (called "win32" 
 
 Since the [Windows version](https://github.com/Squirrel/Squirrel.Windows) of Squirrel (the software that powers auto updates inside [Electron](https://electron.atom.io)) requires access to a file named "RELEASES" when checking for updates, this endpoint will respond with a cached version of the file that contains a download link to a `.nupkg` file (the application update).
 
-## Programmatic usage
+## Programmatic Usage
 
-You can use Hazel programmatically to extend it's functionality.
+You can add Hazel to an existing HTTP server, if you want. For example, this will allow you to implement custom analytics on certain paths.
 
 ```
-const hazel = require('hazel')
+const hazel = require('@zeit/hazel')
 
 http.createServer((req, res) => {
-    hazel(req, res)
+  hazel(req, res)
 })
 ```
 
