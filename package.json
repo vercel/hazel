@@ -2,6 +2,7 @@
   "name": "hazel-server",
   "version": "1.4.0",
   "main": "lib/index.js",
+  "description": "Lightweight update server for Electron apps",
   "scripts": {
     "start": "micro -p ${PORT:-3000} lib/server.js",
     "dev": "micro-dev lib/server.js",
