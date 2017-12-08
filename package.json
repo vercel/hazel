@@ -44,6 +44,8 @@
     "express-useragent": "1.0.8",
     "fetch": "1.1.0",
     "finalhandler": "1.1.0",
+    "fs-extra": "4.0.3",
+    "handlebars": "4.0.11",
     "jest": "21.2.1",
     "micro": "9.0.2",
     "ms": "2.1.1",
@@ -51,7 +53,8 @@
     "router": "1.3.2",
     "semver": "5.4.1",
     "stream-to-string": "1.1.0",
-    "test-listen": "1.1.0"
+    "test-listen": "1.1.0",
+    "timeago.js": "3.0.2"
   },
   "devDependencies": {
     "eslint-config-prettier": "2.9.0",
