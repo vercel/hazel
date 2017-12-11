@@ -44,7 +44,6 @@
     "express-useragent": "1.0.8",
     "fetch": "1.1.0",
     "finalhandler": "1.1.0",
-    "fs-extra": "4.0.3",
     "handlebars": "4.0.11",
     "jest": "21.2.1",
     "micro": "9.0.2",
