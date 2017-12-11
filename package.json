@@ -41,6 +41,7 @@
     ]
   },
   "dependencies": {
+    "date-fns": "1.29.0",
     "express-useragent": "1.0.8",
     "fetch": "1.1.0",
     "finalhandler": "1.1.0",
@@ -52,8 +53,7 @@
     "router": "1.3.2",
     "semver": "5.4.1",
     "stream-to-string": "1.1.0",
-    "test-listen": "1.1.0",
-    "timeago.js": "3.0.2"
+    "test-listen": "1.1.0"
   },
   "devDependencies": {
     "eslint-config-prettier": "2.9.0",
