@@ -63,13 +63,13 @@ As an example, check out the [latest Now Desktop release](https://api.github.com
 
 ### /
 
-Automatically detects the platform/OS of the visitor by parsing the user agent and then downloads the appropriate copy of your application.
-
-If the latest version of the application wasn't yet pulled from [GitHub Releases](https://help.github.com/articles/creating-releases/), it will return a message and the status code `404`. The same happens if the latest release doesn't contain a file for the detected platform.
+Displays an overview page showing the cached repository with the different available platforms and file sizes. Links to the repo, releases, specific cached version and direct downloads for each platform are present.
 
 ### /download
 
-Does the same as `/` (basically an alias).
+Automatically detects the platform/OS of the visitor by parsing the user agent and then downloads the appropriate copy of your application.
+
+If the latest version of the application wasn't yet pulled from [GitHub Releases](https://help.github.com/articles/creating-releases/), it will return a message and the status code `404`. The same happens if the latest release doesn't contain a file for the detected platform.
 
 ### /download/:platform
 
