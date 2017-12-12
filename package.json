@@ -29,6 +29,7 @@
     ],
     "files": [
       "lib",
+      "views",
       "package-lock.json",
       "package.json"
     ]
