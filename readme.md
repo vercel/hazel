@@ -92,13 +92,21 @@ Since the [Windows version](https://github.com/Squirrel/Squirrel.Windows) of Squ
 ## Programmatic Usage
 
 You can add Hazel to an existing HTTP server, if you want. For example, this will allow you to implement custom analytics on certain paths.
-
+```npm install hazel-server```
+then set options
 ```js
-const hazel = require('hazel-server')
+const config = {
+  account:process.env.ACCOUNT,//required
+  repository:process.env.REPOSITORY,//required
+}
+
+const http = require('http');
+const hazel = require('hazel-server').main(config);
 
 http.createServer((req, res) => {
   hazel(req, res)
-})
+}).listen(8000)
+
 ```
 
 ## Contributing
