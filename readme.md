@@ -46,7 +46,7 @@ From now on, the auto updater will ask your Hazel deployment for updates!
 
 ## Options
 
-The following environment variables can be used optionally:
+The following environment variables can be used optionally (i.e. now zeit/hazel -e TOKEN="1234567890"):
 
 - `INTERVAL`: Refreshes the cache every x minutes ([restrictions](https://developer.github.com/changes/2012-10-14-rate-limit-changes/))
 - `PRE`: When defined with a value of `1`, only pre-releases will be cached
