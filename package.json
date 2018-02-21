@@ -36,32 +36,32 @@
   },
   "lint-staged": {
     "*.js": [
-      "npm test",
+      "yarn test",
       "prettier --single-quote --no-semi --write",
       "git add"
     ]
   },
   "dependencies": {
     "date-fns": "1.29.0",
-    "express-useragent": "1.0.8",
+    "express-useragent": "1.0.12",
     "fetch": "1.1.0",
     "finalhandler": "1.1.0",
     "handlebars": "4.0.11",
-    "jest": "21.2.1",
-    "micro": "9.0.2",
+    "jest": "22.4.0",
+    "micro": "9.1.0",
     "ms": "2.1.1",
-    "node-fetch": "1.7.3",
+    "node-fetch": "2.0.0",
     "router": "1.3.2",
-    "semver": "5.4.1",
+    "semver": "5.5.0",
     "stream-to-string": "1.1.0",
     "test-listen": "1.1.0"
   },
   "devDependencies": {
     "eslint-config-prettier": "2.9.0",
     "husky": "0.14.3",
-    "lint-staged": "6.0.0",
-    "micro-dev": "2.1.0",
-    "prettier": "1.9.1",
-    "xo": "0.18.2"
+    "lint-staged": "7.0.0",
+    "micro-dev": "2.2.0",
+    "prettier": "1.10.2",
+    "xo": "0.20.3"
   }
 }
