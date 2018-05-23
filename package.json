@@ -45,12 +45,12 @@
     "date-fns": "1.29.0",
     "express-useragent": "1.0.12",
     "fetch": "1.1.0",
-    "finalhandler": "1.1.0",
+    "finalhandler": "1.1.1",
     "handlebars": "4.0.11",
-    "jest": "22.4.0",
-    "micro": "9.1.0",
+    "jest": "22.4.4",
+    "micro": "9.3.1",
     "ms": "2.1.1",
-    "node-fetch": "2.0.0",
+    "node-fetch": "2.1.2",
     "router": "1.3.2",
     "semver": "5.5.0",
     "stream-to-string": "1.1.0",
@@ -59,9 +59,9 @@
   "devDependencies": {
     "eslint-config-prettier": "2.9.0",
     "husky": "0.14.3",
-    "lint-staged": "7.0.0",
-    "micro-dev": "2.2.0",
-    "prettier": "1.10.2",
-    "xo": "0.20.3"
+    "lint-staged": "7.1.2",
+    "micro-dev": "3.0.0",
+    "prettier": "1.12.1",
+    "xo": "0.21.1"
   }
 }
