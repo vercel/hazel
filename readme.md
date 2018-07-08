@@ -37,7 +37,7 @@ const { app, autoUpdater } = require('electron')
 const server = <your-deployment-url>
 const feed = `${server}/update/${process.platform}/${app.getVersion()}`
 
-autoUpdater.setFeedURL(feed)
+autoUpdater.setFeedURL({url: feed})
 ```
 
 That's it! :white_check_mark:
