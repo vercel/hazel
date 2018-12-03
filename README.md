@@ -23,6 +23,12 @@ With [Now CLI](https://zeit.co/download), you can deploy an update server like t
 now zeit/hazel
 ```
 
+Or if you have later versions of now-cli installed.
+
+```bash
+now -V 1 zeit/hazel
+```
+
 You'll be asked for the value of two environment variables:
 
 - `ACCOUNT`: Your username or organisation name on GitHub
