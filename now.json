@@ -1,1 +1,12 @@
-{}
+{
+  "env": [
+    "ACCOUNT",
+    "REPOSITORY"
+  ],
+  "files": [
+    "lib",
+    "views",
+    "package-lock.json",
+    "package.json"
+  ]
+}

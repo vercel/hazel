@@ -22,18 +22,6 @@
       "no-await-in-loop": 0
     }
   },
-  "now": {
-    "env": [
-      "ACCOUNT",
-      "REPOSITORY"
-    ],
-    "files": [
-      "lib",
-      "views",
-      "package-lock.json",
-      "package.json"
-    ]
-  },
   "lint-staged": {
     "*.js": [
       "yarn test",
