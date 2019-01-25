@@ -32,7 +32,7 @@ cd hazel
 Inside the directory, create a new deployment:
 
 ```bash
-now -e ACCOUNT="<github-account>" REPOSITORY="<github-repository>"
+now -e ACCOUNT="<github-account>" -e REPOSITORY="<github-repository>"
 ```
 
 On the command above, you can define the following environment variables:
