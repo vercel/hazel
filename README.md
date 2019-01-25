@@ -17,19 +17,25 @@ The result will be faster and more lightweight than any other solution out there
 
 ## Usage
 
-With [Now CLI](https://zeit.co/download), you can deploy an update server like this:
+With [Now CLI](https://zeit.co/download), you can easily deploy an update server. As the first step, clone the repository:
 
 ```bash
-now zeit/hazel
+git clone https://github.com/zeit/hazel
 ```
 
-Or if you have later versions of now-cli installed.
+Next, move into the directory:
 
 ```bash
-now -V 1 zeit/hazel
+cd hazel
 ```
 
-You'll be asked for the value of two environment variables:
+Inside the directory, create a new deployment:
+
+```bash
+now -e ACCOUNT="<github-account>" -e REPOSITORY="<github-repository>"
+```
+
+On the command above, you can define the following environment variables:
 
 - `ACCOUNT`: Your username or organisation name on GitHub
 - `REPOSITORY`: The name of the repository to pull releases from

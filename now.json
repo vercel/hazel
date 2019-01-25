@@ -1,0 +1,16 @@
+{
+    "version": 2,
+    "name": "hazel",
+    "builds": [
+        {
+            "src": "lib/server.js",
+            "use": "@now/node"
+        }
+    ],
+    "routes": [
+        {
+            "src": ".*",
+            "dest": "/lib/server.js"
+        }
+    ]
+}

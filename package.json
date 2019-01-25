@@ -4,7 +4,6 @@
   "main": "lib/index.js",
   "description": "Lightweight update server for Electron apps",
   "scripts": {
-    "start": "micro -p ${PORT:-3000} lib/server.js",
     "dev": "micro-dev lib/server.js",
     "test": "xo && jest",
     "precommit": "lint-staged"
@@ -22,18 +21,6 @@
       "no-await-in-loop": 0
     }
   },
-  "now": {
-    "env": [
-      "ACCOUNT",
-      "REPOSITORY"
-    ],
-    "files": [
-      "lib",
-      "views",
-      "package-lock.json",
-      "package.json"
-    ]
-  },
   "lint-staged": {
     "*.js": [
       "yarn test",
@@ -47,8 +34,8 @@
     "fetch": "1.1.0",
     "finalhandler": "1.1.0",
     "handlebars": "4.0.11",
-    "jest": "22.4.0",
-    "micro": "9.1.0",
+    "jest": "24.0.0",
+    "micro": "9.3.3",
     "ms": "2.1.1",
     "node-fetch": "2.0.0",
     "router": "1.3.2",
