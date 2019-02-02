@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "micro-dev lib/server.js",
     "test": "xo && jest",
-    "precommit": "lint-staged"
+    "precommit": "yarn test && lint-staged"
   },
   "license": "MIT",
   "repository": "zeit/hazel",
@@ -23,7 +23,6 @@
   },
   "lint-staged": {
     "*.js": [
-      "yarn test",
       "prettier --single-quote --no-semi --write",
       "git add"
     ]
