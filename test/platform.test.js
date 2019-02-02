@@ -16,4 +16,16 @@ describe('Platform', () => {
     const result = platform('hi.txt')
     expect(result).toBe(false)
   })
+
+  it('Should prioritize custom platforms', () => {
+    const custom = fname => fname.indexOf('my-platform') !== -1
+
+    let result
+
+    result = platform('my-platform.exe')
+    expect(result).toBe('exe')
+
+    result = platform('my-platform.exe', { custom })
+    expect(result).toBe('custom')
+  })
 })

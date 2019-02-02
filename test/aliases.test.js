@@ -16,4 +16,14 @@ describe('Aliases', () => {
     const result = aliases('test')
     expect(result).toBe(false)
   })
+
+  it('Should handle custom platforms', () => {
+    let result
+
+    result = aliases('custom')
+    expect(result).toBe(false)
+
+    result = aliases('custom', { custom: () => {} })
+    expect(result).toBe('custom')
+  })
 })
