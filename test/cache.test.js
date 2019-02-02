@@ -65,3 +65,27 @@ describe('Cache', () => {
     expect(storage.platforms.darwin.content_type).toBe('application/zip')
   })
 })
+
+describe('cache.getLatestForPlatform', () => {
+  it('should get latest for platform based on req params', async () => {
+    const config = {
+      account: 'zeit',
+      repository: 'hyper',
+      token: process.env.TOKEN,
+      url: process.env.URL
+    }
+
+    const cache = new Cache(config)
+
+    const req = { url: '', params: { platform: 'darwin' } }
+    const { latest, platform, asset } = await cache.getLatestForPlatform(req)
+
+    expect(typeof latest.version).toBe('string')
+    expect(typeof latest.platforms).toBe('object')
+
+    expect(platform).toBe('darwin')
+
+    expect(typeof asset).toBe('object')
+    expect(typeof asset.name).toBe('string')
+  })
+})

@@ -5857,6 +5857,11 @@ timed-out@^4.0.0:
   resolved "https://registry.yarnpkg.com/timed-out/-/timed-out-4.0.1.tgz#f32eacac5a175bea25d7fab565ab3ed8741ef56f"
   integrity sha1-8y6srFoXW+ol1/q1Zas+2HQe9W8=
 
+tiny-params@2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/tiny-params/-/tiny-params-2.0.4.tgz#4d4018e166f1c4e4fd22d94ff829f908d388293a"
+  integrity sha512-nqabD6uAeARJA1buJNdy36rOPICkidpccz0B8IvUeHKrHGLP5QBbWmqLQjrPV6JYsOuAnA032TntVqVpUS9FEQ==
+
 tmp@^0.0.33:
   version "0.0.33"
   resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.0.33.tgz#6d34335889768d21b2bcda0aa277ced3b1bfadf9"
