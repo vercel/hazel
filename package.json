@@ -5,7 +5,7 @@
   "description": "Lightweight update server for Electron apps",
   "scripts": {
     "dev": "micro-dev lib/server.js",
-    "test": "xo && jest && exit $?",
+    "test": "xo && jest",
     "precommit": "lint-staged"
   },
   "license": "MIT",
@@ -23,7 +23,7 @@
   },
   "lint-staged": {
     "*.js": [
-      "yarn test",
+      "yarn test && :",
       "prettier --single-quote --no-semi --write --no-editorconfig",
       "git add"
     ]

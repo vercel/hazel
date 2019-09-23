@@ -12,6 +12,11 @@ describe('Platform', () => {
     expect(result).toBe('deb')
   })
 
+  it('Should parse dmg', () => {
+    const result = platform('hyper-2.1.1.dmg')
+    expect(result).toBe('dmg')
+  })
+
   it('Should return false for unknown files', () => {
     const result = platform('hi.txt')
     expect(result).toBe(false)
