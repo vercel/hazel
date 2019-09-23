@@ -34,7 +34,7 @@
     "express-useragent": "1.0.12",
     "fetch": "1.1.0",
     "finalhandler": "1.1.0",
-    "handlebars": "4.0.11",
+    "handlebars": "4.1.2",
     "jest": "24.0.0",
     "micro": "9.3.3",
     "ms": "2.1.1",
