@@ -24,6 +24,16 @@ describe('Cache', () => {
     }).toThrow(/URL/)
   })
 
+  it('should NOT throw when URL is not set but deployed_to_now is true', () => {
+    const config = {
+      account: 'zeit',
+      repository: 'hyper',
+      token: 'abc',
+      deployed_to_now: true
+    }
+    new Cache(config)
+  })
+
   it('should run without errors', () => {
     const config = {
       account: 'zeit',
