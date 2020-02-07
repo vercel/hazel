@@ -1,6 +1,6 @@
 {
   "name": "hazel-server",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "main": "lib/index.js",
   "description": "Lightweight update server for Electron apps",
   "scripts": {
