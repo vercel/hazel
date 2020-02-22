@@ -1,5 +1,2 @@
-# code coverage
-coverage
-
-# dependencies
 node_modules
+.next
