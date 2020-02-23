@@ -70,6 +70,14 @@ export default props => {
           margin: 0;
         }
 
+        h1 a {
+          color: inherit;
+        }
+
+        h1 a:hover {
+          border-color: #fff;
+        }
+
         nav {
           border-top: 1px solid #333;
           border-bottom: 1px solid #333;
@@ -94,7 +102,7 @@ export default props => {
 
       <aside>
         <h1>
-          {props.account}/<b>{props.repository}</b>
+          <a href={githubUrl}>{props.account}/<b>{props.repository}</b></a>
         </h1>
         <time>{props.age}</time>
       </aside>
