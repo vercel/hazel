@@ -8,7 +8,7 @@ export async function unstable_getStaticProps(context) {
   };
 }
 
-export default props => {
+export default function(props) {
   const githubUrl = `https://github.com/${props.account}/${props.repository}/`;
 
   return (
@@ -112,8 +112,8 @@ export default props => {
           const platform = props.platforms[extension];
 
           return (
-            <span>
-              <a href={platform.url}>{extension}</a>
+            <span key={extension}>
+              <a href={platform.downloadUrl}>{extension}</a>
               <i>{bytes(platform.size, { unitSeparator: ' ' })}</i>
             </span>
           );
