@@ -1,11 +1,17 @@
 {
   "scripts": {
     "build": "next build",
-    "dev": "next"
+    "dev": "next",
+    "prettify": "prettier ./pages/*.js --write"
   },
   "dependencies": {
+    "@zeit/fetch-retry": "4.1.0",
     "next": "9.2.2",
     "react": "16.12.0",
-    "react-dom": "16.12.0"
+    "react-dom": "16.12.0",
+    "stream-to-string": "1.2.0"
+  },
+  "devDependencies": {
+    "prettier": "1.19.1"
   }
 }
