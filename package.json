@@ -38,7 +38,7 @@
     "jest": "24.0.0",
     "micro": "9.3.3",
     "ms": "2.1.1",
-    "node-fetch": "2.0.0",
+    "node-fetch": "2.6.1",
     "router": "1.3.2",
     "semver": "5.5.0",
     "stream-to-string": "1.1.0",
