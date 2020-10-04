@@ -23,18 +23,20 @@
   },
   "lint-staged": {
     "*.js": [
-      "yarn test && :",
+      "yarn test --passWithNoTests && :",
       "prettier --single-quote --no-semi --write --no-editorconfig",
       "git add"
     ]
   },
   "dependencies": {
+    "@vercel/node": "^1.8.2",
     "async-retry": "1.2.3",
     "date-fns": "1.29.0",
     "express-useragent": "1.0.12",
     "fetch": "1.1.0",
     "finalhandler": "1.1.0",
     "handlebars": "4.0.11",
+    "install": "^0.13.0",
     "jest": "24.0.0",
     "micro": "9.3.3",
     "ms": "2.1.1",
@@ -42,7 +44,9 @@
     "router": "1.3.2",
     "semver": "5.5.0",
     "stream-to-string": "1.1.0",
-    "test-listen": "1.1.0"
+    "test-listen": "1.1.0",
+    "vercel": "^20.1.0",
+    "yarn": "^1.22.10"
   },
   "devDependencies": {
     "eslint-config-prettier": "2.9.0",
