@@ -1,0 +1,21 @@
+{
+    "version": 2,
+    "env": {
+        "ACCOUNT": "Your GitHub Account",
+        "REPOSITORY": "Yout GitHub Repository",
+        "TOKEN": "Your GitHub Token",
+        "URL": "http://localhost:3000"
+    },
+    "builds": [
+        {
+            "src": "lib/*.js",
+            "use": "@vercel/node"
+        }
+    ],
+    "routes": [
+        {
+            "src": ".*",
+            "dest": "lib/server.js"
+        }
+    ]
+}
