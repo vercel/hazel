@@ -13,14 +13,14 @@ The result will be faster and more lightweight than any other solution out there
 - Refreshes the cache every **15 minutes** (custom interval [possible](#options))
 - When asked for an update, it returns the link to the GitHub asset directly (saves bandwidth)
 - Supports **macOS** and **Windows** apps
-- Scales very nicely across multiple [Now](https://zeit.co/now) instances
+- Scales very nicely across multiple [Vercel](https://vercel.com) instances
 
 ## Usage
 
-With [Now CLI](https://zeit.co/download), you can easily deploy an update server. As the first step, clone the repository:
+With [Vercel CLI](https://vercel.com/download), you can easily deploy an update server. As the first step, clone the repository:
 
 ```bash
-git clone https://github.com/zeit/hazel
+git clone https://github.com/vercel/hazel
 ```
 
 Next, move into the directory:
@@ -32,7 +32,7 @@ cd hazel
 Inside the directory, create a new deployment:
 
 ```bash
-now -e ACCOUNT="<github-account>" -e REPOSITORY="<github-repository>"
+vercel -e ACCOUNT="<github-account>" -e REPOSITORY="<github-repository>"
 ```
 
 On the command above, you can define the following environment variables:
@@ -63,7 +63,7 @@ The following environment variables can be used optionally:
 - `INTERVAL`: Refreshes the cache every x minutes ([restrictions](https://developer.github.com/changes/2012-10-14-rate-limit-changes/))
 - `PRE`: When defined with a value of `1`, only pre-releases will be cached
 - `TOKEN`: Your GitHub token (for private repos)
-- `URL`: The server's URL (for private repos - when running on [Now](https://zeit.co/now), this field is filled with the URL of the deployment automatically)
+- `URL`: The server's URL (for private repos - when running on [Vercel](https://vercel.com), this field is filled with the URL of the deployment automatically)
 
 ## Statistics
 
