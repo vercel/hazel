@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "env": {
+    "ACCOUNT": "damonbauer",
+    "REPOSITORY": "electron-on-air-notifier",
+    "TOKEN": "d65320844ae8c9429cb7a780480d5d2df9e3905f"
+  },
+  "builds": [
+    {
+      "src": "lib/*.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": ".*",
+      "dest": "lib/server.js"
+    }
+  ]
+}
