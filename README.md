@@ -71,6 +71,21 @@ Since Hazel routes all the traffic for downloading the actual application files 
 
 As an example, check out the [latest Now Desktop release](https://api.github.com/repos/zeit/now-desktop/releases/latest) and search for `mac.zip`. You'll find a release containing a sub property named `download_count` with the amount of downloads as its value.
 
+## Release Files Naming And Extension
+
+We find and cache releases for each platform by the file name and extension. it may be obvious but can save quite some times for those who just getting started.
+
+As you can see in [platform.js](https://github.com/vercel/hazel/blob/master/lib/platform.js) and [aliases.js](https://github.com/vercel/hazel/blob/master/lib/aliases.js), for each OS, the extensions are expected as below:
+
+| OS | :platform | .Extension |
+| ----------- | ----------- | ----------- |
+| Windows   | win32, windows, win | .exe
+| macOS    | dmg | .dmg
+| macOS | darwin | .zip (only if the file name contains "mac" or "darwin")
+| Linux with RPM package manager | fedora  | .rpm
+| Linux with DEB package manager | debian | .deb
+| Linux | appimage | .AppImage
+
 ## Routes
 
 ### /
