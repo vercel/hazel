@@ -47,9 +47,9 @@ Once it's deployed, paste the deployment address into your code (please keep in 
 const { app, autoUpdater } = require('electron')
 
 const server = <your-deployment-url>
-const feed = `${server}/update/${process.platform}/${app.getVersion()}`
+const url = `${server}/update/${process.platform}/${app.getVersion()}`
 
-autoUpdater.setFeedURL({ feed })
+autoUpdater.setFeedURL({ url })
 ```
 
 That's it! :white_check_mark:
