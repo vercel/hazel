@@ -18,7 +18,8 @@
       "camelcase": 0,
       "new-cap": 0,
       "unicorn/no-process-exit": 0,
-      "no-await-in-loop": 0
+      "no-await-in-loop": 0,
+      "unicorn/import-index": 0
     }
   },
   "lint-staged": {
