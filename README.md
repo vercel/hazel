@@ -1,9 +1,5 @@
 # Hazel
 
-[![Build Status](https://travis-ci.org/zeit/hazel.svg?branch=master)](https://travis-ci.org/zeit/hazel)
-[![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
-[![Join the community on Spectrum](https://withspectrum.github.io/badge/badge.svg)](https://spectrum.chat/zeit)
-
 This project lets you deploy an update server for [Electron](https://electron.atom.io) apps with ease: You only need to run a single command and fill out two text fields.
 
 The result will be faster and more lightweight than any other solution out there! :rocket:
@@ -13,33 +9,13 @@ The result will be faster and more lightweight than any other solution out there
 - Refreshes the cache every **15 minutes** (custom interval [possible](#options))
 - When asked for an update, it returns the link to the GitHub asset directly (saves bandwidth)
 - Supports **macOS** and **Windows** apps
-- Scales very nicely across multiple [Now](https://zeit.co/now) instances
+- Scales infinitely on [Vercel](https://vercel.com) Serverless Functions
 
 ## Usage
 
-With [Now CLI](https://zeit.co/download), you can easily deploy an update server. As the first step, clone the repository:
+Click here to deploy Hazel on [Vercel](https://vercel.com):
 
-```bash
-git clone https://github.com/zeit/hazel
-```
-
-Next, move into the directory:
-
-```bash
-cd hazel
-```
-
-Inside the directory, create a new deployment:
-
-```bash
-now -e ACCOUNT="<github-account>" -e REPOSITORY="<github-repository>"
-```
-
-On the command above, you can define the following environment variables:
-
-- `ACCOUNT`: Your username or organisation name on GitHub
-- `REPOSITORY`: The name of the repository to pull releases from
-- `PORT`: The port on which Hazel should run
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fhazel&env=ACCOUNT,REPOSITORY&envDescription=Enter%20your%20GitHub%20user%2Forg%20slug%20and%20the%20name%20of%20the%20repository%20that%20contains%20your%20Electron%20app.&envLink=https%3A%2F%2Fgithub.com%2Fvercel%2Fhazel%23usage&repo-name=hazel-update-server)
 
 Once it's deployed, paste the deployment address into your code (please keep in mind that updates should only occur in the production version of the app, not while developing):
 
@@ -63,13 +39,13 @@ The following environment variables can be used optionally:
 - `INTERVAL`: Refreshes the cache every x minutes ([restrictions](https://developer.github.com/changes/2012-10-14-rate-limit-changes/))
 - `PRE`: When defined with a value of `1`, only pre-releases will be cached
 - `TOKEN`: Your GitHub token (for private repos)
-- `URL`: The server's URL (for private repos - when running on [Now](https://zeit.co/now), this field is filled with the URL of the deployment automatically)
+- `URL`: The server's URL (for private repos - when running on [Vercel](https://vercel.com), this field is filled with the URL of the deployment automatically)
 
 ## Statistics
 
 Since Hazel routes all the traffic for downloading the actual application files to [GitHub Releases](https://help.github.com/articles/creating-releases/), you can use their API to determine the download count for a certain release.
 
-As an example, check out the [latest Now Desktop release](https://api.github.com/repos/zeit/now-desktop/releases/latest) and search for `mac.zip`. You'll find a release containing a sub property named `download_count` with the amount of downloads as its value.
+As an example, check out the [latest Hyper release](https://api.github.com/repos/vercel/hyper/releases/latest) and search for `mac.zip`. You'll find a release containing a sub property named `download_count` with the amount of downloads as its value.
 
 ## Routes
 
@@ -125,4 +101,4 @@ Huge thanks to my ([@leo](https://github.com/leo)'s) friend [Andy](http://twitte
 
 ## Author
 
-Leo Lamprecht ([@notquiteleo](https://twitter.com/notquiteleo)) - [ZEIT](https://zeit.co)
+Leo Lamprecht ([@notquiteleo](https://twitter.com/notquiteleo)) - [Vercel](https://vercel.com)
