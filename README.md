@@ -7,6 +7,7 @@ This project lets you deploy an update server for [Electron](https://www.electro
 
 The result will be faster and more lightweight than any other solution out there! :rocket:
 
+- Recommended by Electron [here](https://www.electronjs.org/docs/tutorial/updates#deploying-an-update-server)
 - Built on top of [micro](https://github.com/zeit/micro), the tiniest HTTP framework for Node.js
 - Pulls the latest release data from [GitHub Releases](https://help.github.com/articles/creating-releases/) and caches it in memory
 - Refreshes the cache every **15 minutes** (custom interval [possible](#options))
