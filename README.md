@@ -96,7 +96,7 @@ http.createServer((req, res) => {
 
 1. [Fork](https://help.github.com/articles/fork-a-repo/) this repository to your own GitHub account and then [clone](https://help.github.com/articles/cloning-a-repository/) it to your local device
 2. Move into the directory of your clone: `cd hazel`
-3. Run the development server: `npm run dev`
+3. Install [Vercel CLI](https://vercel.com/cli) and run the development server: `vercel dev`
 
 ## Credits
 
