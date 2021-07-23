@@ -24,7 +24,7 @@
   },
   "lint-staged": {
     "*.js": [
-      "yarn test && :",
+      "yarn test --passWithNoTests && :",
       "prettier --single-quote --no-semi --write --no-editorconfig",
       "git add"
     ]
