@@ -85,11 +85,18 @@ Since the [Windows version](https://github.com/Squirrel/Squirrel.Windows) of Squ
 
 You can add Hazel to an existing HTTP server, if you want. For example, this will allow you to implement custom analytics on certain paths.
 
+```bash
+npm install hazel-server
+```
+
 ```js
 const hazel = require('hazel-server')
 
 http.createServer((req, res) => {
-  hazel(req, res)
+  hazel({
+    account: 'vercel', // Replace with your GitHub account name
+    repository: 'hazel' // Replace with your GitHub repo name  
+  })(req, res)
 })
 ```
 
