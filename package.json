@@ -1,5 +1,5 @@
 {
-  "name": "hazel-server",
+  "name": "@wixc3/hazel-server",
   "version": "5.1.1",
   "main": "lib/index.js",
   "description": "Lightweight update server for Electron apps",
@@ -9,7 +9,7 @@
     "precommit": "lint-staged"
   },
   "license": "MIT",
-  "repository": "vercel/hazel",
+  "repository": "wixplosives/hazel",
   "xo": {
     "extends": [
       "prettier"
@@ -51,5 +51,8 @@
     "lint-staged": "7.0.0",
     "prettier": "1.10.2",
     "xo": "0.20.3"
+  },
+  "publishConfig": {
+    "access": "restricted"
   }
 }
