@@ -2,7 +2,8 @@
 /* global describe, it, expect */
 const Cache = require('../lib/cache')
 
-describe('Cache', () => {
+describe('Cache', function () {
+  this.timeout = 10000
   it('should throw when account is not defined', () => {
     expect(() => {
       const config = { repository: 'hyper' }
@@ -29,7 +30,7 @@ describe('Cache', () => {
       account: 'zeit',
       repository: 'hyper',
       token: process.env.TOKEN,
-      url: process.env.URL
+      url: process.env.URL,
     }
 
     new Cache(config)
@@ -40,7 +41,7 @@ describe('Cache', () => {
       account: 'zeit',
       repository: 'hyper',
       token: process.env.TOKEN,
-      url: process.env.URL
+      url: process.env.URL,
     }
 
     const cache = new Cache(config)
@@ -55,7 +56,7 @@ describe('Cache', () => {
       account: 'zeit',
       repository: 'hyper',
       token: process.env.TOKEN,
-      url: process.env.URL
+      url: process.env.URL,
     }
 
     const cache = new Cache(config)
