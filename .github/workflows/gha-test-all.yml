@@ -1,54 +1,20 @@
-name: test-all (Manual)
-on:
-  workflow_dispatch:
-    inputs:
-      pull_request_id:
-        description: 'Pull request number to publish results to ( github.event.issue.number )'
-        required: false
-        default: ''
+name: tests
+
+on: [push, pull_request]
+
 jobs:
-  tests-linux:
+  tests:
     name: node ${{ matrix.node-version }} / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [12]
-        os: [ubuntu-latest, windows-latest]
+        node-version: [14, 12]
+        os: [ubuntu-latest, macOS-latest]
     steps:
-      - uses: octokit/request-action@v2.x
-        id: markstart
-        with:
-          route: POST /repos/:repository/issues/${{ github.event.inputs.pull_request_id }}/comments
-          repository: ${{ github.repository }}
-          body: 'Starting test-all ${{ matrix.os }} ${{ matrix.node-version }} script. It will take couple(?) of minutes to complete.'
-        env:
-          GITHUB_TOKEN: ${{ secrets.CIJOE_GITHUB_TOKEN }}
-      - name: checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-          registry-url: 'https://registry.npmjs.org/'
-      - run: npm i -g yarn@1
-      - name: run yarn
-        run: yarn --frozen-lockfile
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: yarn test
-      - uses: octokit/request-action@v2.x
-        if: ${{ failure() }}
-        with:
-          route: POST /repos/:repository/issues/${{ github.event.inputs.pull_request_id }}/comments
-          repository: ${{ github.repository }}
-          body: 'ERROR! test-all ${{ matrix.os }} ${{ matrix.node-version }} script failed during execution.'
-        env:
-          GITHUB_TOKEN: ${{ secrets.CIJOE_GITHUB_TOKEN }}
-      - uses: octokit/request-action@v2.x
-        if: ${{ success() }}
-        with:
-          route: POST /repos/:repository/issues/${{ github.event.inputs.pull_request_id }}/comments
-          repository: ${{ github.repository }}
-          body: 'test-all ${{ matrix.os }} ${{ matrix.node-version }} script complete. No errors'
-        env:
-          GITHUB_TOKEN: ${{ secrets.CIJOE_GITHUB_TOKEN }}
+      - run: npm install
+      - run: npm test
