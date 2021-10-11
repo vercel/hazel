@@ -1,15 +1,15 @@
 {
   "name": "hazel-server",
-  "version": "5.0.0",
+  "version": "5.1.1",
   "main": "lib/index.js",
   "description": "Lightweight update server for Electron apps",
   "scripts": {
-    "dev": "micro-dev lib/server.js",
+    "dev": "npx vercel dev",
     "test": "xo && jest",
     "precommit": "lint-staged"
   },
   "license": "MIT",
-  "repository": "zeit/hazel",
+  "repository": "vercel/hazel",
   "xo": {
     "extends": [
       "prettier"
@@ -18,7 +18,8 @@
       "camelcase": 0,
       "new-cap": 0,
       "unicorn/no-process-exit": 0,
-      "no-await-in-loop": 0
+      "no-await-in-loop": 0,
+      "unicorn/import-index": 0
     }
   },
   "lint-staged": {
@@ -48,7 +49,6 @@
     "eslint-config-prettier": "2.9.0",
     "husky": "0.14.3",
     "lint-staged": "7.0.0",
-    "micro-dev": "2.2.0",
     "prettier": "1.10.2",
     "xo": "0.20.3"
   }
