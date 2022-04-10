@@ -1,6 +1,6 @@
 {
   "name": "@wixc3/hazel-server",
-  "version": "5.1.6",
+  "version": "5.1.7",
   "main": "lib/index.js",
   "description": "Lightweight update server for Electron apps",
   "scripts": {
