@@ -12,7 +12,7 @@ The result will be faster and more lightweight than any other solution out there
 - Pulls the latest release data from [GitHub Releases](https://help.github.com/articles/creating-releases/) and caches it in memory
 - Refreshes the cache every **15 minutes** (custom interval [possible](#options))
 - When asked for an update, it returns the link to the GitHub asset directly (saves bandwidth)
-- Supports **macOS** and **Windows** apps
+- Supports **macOS**, **Windows**, and **Linux** apps
 - Scales infinitely on [Vercel](https://vercel.com) Serverless Functions
 
 ## Usage
