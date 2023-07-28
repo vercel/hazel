@@ -41,8 +41,9 @@ export const createHazel = (config: Config): RequestHandler => {
 
   const middleware: RequestHandler = (req, res) => {
     try {
-      const parsedUrl = new URL(req.url || "", config.url);
-      const parts = parsedUrl.pathname.split("/").filter(Boolean);
+      if (!req.url) throw new Error("No URL");
+
+      const parts = req.url.split("/").filter(Boolean);
       const options: Record<string, string> = {};
 
       const routes: Record<string, RouteHandler> = {
@@ -82,9 +83,11 @@ export const createHazel = (config: Config): RequestHandler => {
         }
       }
 
+      console.warn(`No matching route for ${req.url}`);
       res.statusCode = 404;
       res.end(JSON.stringify({ error: { code: 404, message: "Not Found" } }));
     } catch (err) {
+      console.error(err);
       res.statusCode = 500;
       res.end(
         JSON.stringify({
