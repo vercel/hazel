@@ -43,7 +43,7 @@ export const createHazel = (config: Config): RequestHandler => {
     try {
       const parsedUrl = new URL(req.url || "", config.url);
       const parts = parsedUrl.pathname.split("/").filter(Boolean);
-      let options: Record<string, string> = {};
+      const options: Record<string, string> = {};
 
       const routes: Record<string, RouteHandler> = {
         "/": overview,
@@ -54,7 +54,7 @@ export const createHazel = (config: Config): RequestHandler => {
       };
 
       // Search for a matching route
-      for (let pattern in routes) {
+      for (const pattern in routes) {
         const patternParts = pattern.split("/").filter(Boolean);
 
         // If parts length does not match, continue with the next pattern

@@ -1,4 +1,4 @@
-import { Cache } from "../src/lib/cache.js";
+import { Cache } from "../lib/cache.js";
 
 describe("cache", () => {
   it("should throw when account is not defined", () => {

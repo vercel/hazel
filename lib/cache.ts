@@ -102,7 +102,7 @@ export class Cache {
         { retries: 3 },
       );
 
-      let content = await convertStream(body);
+      const content = await convertStream(body);
       const matches = content.match(/[^ ]*\.nupkg/gim);
 
       if (!matches || matches.length === 0) {

@@ -7,9 +7,8 @@
     "esModuleInterop": true,
     "skipLibCheck": false,
     "forceConsistentCasingInFileNames": true,
-    "outDir": "./lib",
     "baseUrl": "./"
   },
-  "include": ["src/**/*.ts"],
+  "include": ["lib/**/*.ts", "api/**/*.ts"],
   "exclude": ["node_modules"]
 }

@@ -1,4 +1,4 @@
-import { checkPlatform } from "../src/lib/platform.js";
+import { checkPlatform } from "../lib/platform.js";
 
 describe("platform", () => {
   it("should parse mac", () => {

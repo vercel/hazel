@@ -48,7 +48,7 @@ export const generateRequestHandlers = ({
   const shouldProxyPrivateDownload =
     token && typeof token === "string" && token.length > 0;
 
-  const download: RouteHandler = async (req, res, options) => {
+  const download: RouteHandler = async (req, res) => {
     const userAgent = expressUserAgent.parse(req.headers["user-agent"] || "");
     const params = urlHelpers.parse(req.url || "", true).query;
     const isUpdate = params && params.update;
@@ -243,7 +243,7 @@ export const generateRequestHandlers = ({
     }
   };
 
-  const overview: RouteHandler = async (req, res, options) => {
+  const overview: RouteHandler = async (req, res) => {
     const latest = await loadCache();
 
     try {

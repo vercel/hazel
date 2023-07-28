@@ -1,4 +1,4 @@
-import { checkAlias } from "../src/lib/aliases.js";
+import { checkAlias } from "../lib/aliases.js";
 
 describe("aliases", () => {
   it("should return the correct platform", () => {
