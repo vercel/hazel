@@ -6,7 +6,7 @@ import { send } from "micro";
 import { compare, valid } from "semver";
 import urlHelpers from "url";
 
-import { checkAlias } from "./aliases.js";
+import { resolvePlatform } from "./aliases.js";
 import type { Cache, Platform } from "./cache.js";
 import type { Config, RouteHandler } from "./index.js";
 import { prepareView } from "./view.js";
@@ -104,7 +104,7 @@ export const generateRequestHandlers = ({
     console.log("CACHE: ", latest);
 
     // Check platform for appropiate aliases
-    resolvedPlatform = checkAlias(resolvedPlatform);
+    resolvedPlatform = resolvePlatform(resolvedPlatform);
 
     if (!resolvedPlatform) {
       send(res, 500, "The specified platform is not valid");
@@ -140,7 +140,7 @@ export const generateRequestHandlers = ({
       return;
     }
 
-    const resolvedPlatform = checkAlias(platform);
+    const resolvedPlatform = resolvePlatform(platform);
 
     if (!resolvedPlatform) {
       send(res, 500, {

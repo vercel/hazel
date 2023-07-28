@@ -2,7 +2,7 @@ import { createServer } from "http";
 import { serve } from "micro";
 import listen from "test-listen";
 
-import { hazel } from "../lib/server.js";
+import { hazel } from "./server.js";
 
 const initialEnv: NodeJS.ProcessEnv = Object.assign({}, process.env);
 

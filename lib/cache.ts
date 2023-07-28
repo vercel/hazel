@@ -3,7 +3,7 @@ import fetch from "cross-fetch";
 import ms from "ms";
 
 import type { Config } from "./index.js";
-import { checkPlatform } from "./platform.js";
+import { patchPlatform } from "./platform.js";
 
 export type CustomError = Error & { code: string };
 
@@ -193,7 +193,7 @@ export class Cache {
           continue;
         }
 
-        const platform = checkPlatform(name);
+        const platform = patchPlatform(name);
 
         if (!platform) {
           continue;

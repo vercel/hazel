@@ -1,8 +1,4 @@
-type AliasMap = {
-  [key: string]: string[];
-};
-
-const ALIASES: AliasMap = {
+const aliasMap: Record<string, string[]> = {
   darwin: ["mac", "macos", "osx"],
   exe: ["win32", "windows", "win"],
   deb: ["debian"],
@@ -12,25 +8,13 @@ const ALIASES: AliasMap = {
   nupkg: ["nupkg"],
 };
 
-const keys = Object.keys(ALIASES);
-for (const existingPlatform of keys) {
-  const newPlatform = `${existingPlatform}_arm64`;
-  ALIASES[newPlatform] = ALIASES[existingPlatform].map(
-    (alias) => `${alias}_arm64`,
-  );
+for (const [key, value] of Object.entries(aliasMap)) {
+  aliasMap[`${key}_arm64`] = value.map((v) => `${v}_arm64`);
 }
 
-export const checkAlias = (platform: string): string | null => {
-  if (ALIASES[platform] !== undefined) {
-    return platform;
+export function resolvePlatform(platform: string): string | null {
+  for (const [key, value] of Object.entries(aliasMap)) {
+    if (key === platform || value.includes(platform)) return key;
   }
-
-  for (const guess of keys) {
-    const list = ALIASES[guess];
-    if (list.includes(platform)) {
-      return guess;
-    }
-  }
-
   return null;
-};
+}

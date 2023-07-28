@@ -1,18 +1,18 @@
-import { checkPlatform } from "../lib/platform.js";
+import { patchPlatform } from "./platform.js";
 
 describe("platform", () => {
   it("should parse mac", () => {
-    const result = checkPlatform("hyper-2.1.1-mac.zip");
+    const result = patchPlatform("hyper-2.1.1-mac.zip");
     expect(result).toBe("darwin");
   });
 
   it("should parse other platforms", () => {
-    const result = checkPlatform("hyper_2.1.1_amd64.deb");
+    const result = patchPlatform("hyper_2.1.1_amd64.deb");
     expect(result).toBe("deb");
   });
 
   it("should parse dmg", () => {
-    const result = checkPlatform("hyper-2.1.1.dmg");
+    const result = patchPlatform("hyper-2.1.1.dmg");
     expect(result).toBe("dmg");
   });
 
@@ -40,7 +40,7 @@ describe("platform", () => {
     ];
     const results: (string | false)[] = [];
     for (const file of shebang) {
-      results.push(checkPlatform(file));
+      results.push(patchPlatform(file));
     }
     console.log(JSON.stringify(results));
     expect(results).toEqual([
@@ -67,7 +67,7 @@ describe("platform", () => {
   });
 
   it("should return false for unknown files", () => {
-    const result = checkPlatform("hi.txt");
+    const result = patchPlatform("hi.txt");
     expect(result).toBe(false);
   });
 });
