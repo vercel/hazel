@@ -1,3 +1,3 @@
-import server from "../lib/server.js";
+import { hazel } from "../lib/server.js";
 
-export default server;
+export default hazel;

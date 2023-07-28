@@ -2,7 +2,7 @@ import { createServer } from "http";
 import { serve } from "micro";
 import listen from "test-listen";
 
-import run from "../src/lib/server.js";
+import { hazel } from "../src/lib/server.js";
 
 const initialEnv: NodeJS.ProcessEnv = Object.assign({}, process.env);
 
@@ -17,8 +17,7 @@ describe("Server", () => {
       REPOSITORY: "hyper",
     };
 
-    const server = createServer(serve(run));
-
+    const server = createServer(serve(hazel));
     await listen(server);
     server.close();
   });

@@ -1,96 +1,102 @@
-import urlHelpers from "url";
-import { send } from "micro";
-import { valid, compare } from "semver";
-import expressUserAgent from "express-useragent";
 import fetch from "cross-fetch";
 import { formatDistanceToNow } from "date-fns";
+import expressUserAgent from "express-useragent";
+import type { IncomingMessage, ServerResponse } from "http";
+import { send } from "micro";
+import { compare, valid } from "semver";
+import urlHelpers from "url";
 
-import checkAlias from "./aliases.js";
-import prepareView from "./view.js";
-import type Cache from "./cache.js";
+import { checkAlias } from "./aliases.js";
+import type { Cache, Platform } from "./cache.js";
+import type { Config, RouteHandler } from "./index.js";
+import { prepareView } from "./view.js";
 
-const routes = ({
+function proxyPrivateDownload(
+  token: string,
+  asset: Platform,
+  req: IncomingMessage,
+  res: ServerResponse,
+) {
+  const redirect = "manual";
+  const headers = {
+    Accept: "application/octet-stream",
+    Authorization: `Bearer ${token}`,
+  };
+  const options: RequestInit = { headers, redirect };
+  const { api_url: apiUrl } = asset;
+
+  fetch(apiUrl, options).then((assetRes) => {
+    const location = assetRes.headers.get("Location");
+    if (!location) {
+      send(res, 500, "The asset URL is not valid");
+      return;
+    }
+    res.setHeader("Location", location);
+    send(res, 302);
+  });
+}
+
+export const generateRequestHandlers = ({
   cache,
   config,
 }: {
   cache: Cache;
-  config: {
-    interval?: string;
-    account?: string;
-    repository?: string;
-    pre?: string;
-    token?: string;
-    url?: string;
-  };
+  config: Config;
 }) => {
   const { loadCache } = cache;
   const { token, url } = config;
   const shouldProxyPrivateDownload =
     token && typeof token === "string" && token.length > 0;
 
-  // Helpers
-  const proxyPrivateDownload = (asset, req, res) => {
-    const redirect = "manual";
-    const headers = {
-      Accept: "application/octet-stream",
-      Authorization: `Bearer ${token}`,
-    };
-    const options: RequestInit = { headers, redirect };
-    const { api_url: apiUrl } = asset;
-
-    fetch(apiUrl, options).then((assetRes) => {
-      res.setHeader("Location", assetRes.headers.get("Location"));
-      send(res, 302);
-    });
-  };
-
-  const download = async (req, res) => {
-    const userAgent = expressUserAgent.parse(req.headers["user-agent"]);
-    const params = urlHelpers.parse(req.url, true).query;
+  const download: RouteHandler = async (req, res, options) => {
+    const userAgent = expressUserAgent.parse(req.headers["user-agent"] || "");
+    const params = urlHelpers.parse(req.url || "", true).query;
     const isUpdate = params && params.update;
 
-    let platform;
+    let resolvedPlatform;
 
     if (userAgent.isMac && isUpdate) {
-      platform = "darwin";
+      resolvedPlatform = "darwin";
     } else if (userAgent.isMac && !isUpdate) {
-      platform = "dmg";
+      resolvedPlatform = "dmg";
     } else if (userAgent.isWindows) {
-      platform = "exe";
+      resolvedPlatform = "exe";
     }
 
     // Get the latest version from the cache
     const { platforms } = await loadCache();
 
-    if (!platform || !platforms || !platforms[platform]) {
+    if (!resolvedPlatform || !platforms || !platforms[resolvedPlatform]) {
       send(res, 404, "No download available for your platform!");
       return;
     }
 
     if (shouldProxyPrivateDownload) {
-      proxyPrivateDownload(platforms[platform], req, res);
+      proxyPrivateDownload(token, platforms[resolvedPlatform], req, res);
       return;
     }
 
     res.writeHead(302, {
-      Location: platforms[platform].url,
+      Location: platforms[resolvedPlatform].url,
     });
 
     res.end();
   };
 
-  const downloadPlatform = async (req, res) => {
-    const params = urlHelpers.parse(req.url, true).query;
+  const downloadPlatform: RouteHandler = async (req, res, options) => {
+    const { platform } = options;
+
+    const params = urlHelpers.parse(req.url || "", true).query;
     const isUpdate = params && params.update;
 
-    let { platform } = req.params;
+    let resolvedPlatform: string | null = platform;
 
-    if (platform === "mac" && !isUpdate) {
-      platform = "dmg";
+    if (resolvedPlatform === "mac" && !isUpdate) {
+      resolvedPlatform = "dmg";
     }
 
-    if (platform === "mac_arm64" && !isUpdate) {
-      platform = "dmg_arm64";
+    if (resolvedPlatform === "mac_arm64" && !isUpdate) {
+      resolvedPlatform = "dmg_arm64";
     }
 
     // Get the latest version from the cache
@@ -98,32 +104,32 @@ const routes = ({
     console.log("CACHE: ", latest);
 
     // Check platform for appropiate aliases
-    platform = checkAlias(platform);
+    resolvedPlatform = checkAlias(resolvedPlatform);
 
-    if (!platform) {
+    if (!resolvedPlatform) {
       send(res, 500, "The specified platform is not valid");
       return;
     }
 
-    if (!latest.platforms || !latest.platforms[platform]) {
+    if (!latest.platforms || !latest.platforms[resolvedPlatform]) {
       send(res, 404, "No download available for your platform");
       return;
     }
 
     if (token && typeof token === "string" && token.length > 0) {
-      proxyPrivateDownload(latest.platforms[platform], req, res);
+      proxyPrivateDownload(token, latest.platforms[resolvedPlatform], req, res);
       return;
     }
 
     res.writeHead(302, {
-      Location: latest.platforms[platform].url,
+      Location: latest.platforms[resolvedPlatform].url,
     });
 
     res.end();
   };
 
-  const update = async (req, res) => {
-    const { platform: platformName, version } = req.params;
+  const update: RouteHandler = async (req, res, options) => {
+    const { platform, version } = options;
 
     if (!valid(version)) {
       send(res, 500, {
@@ -134,9 +140,9 @@ const routes = ({
       return;
     }
 
-    const platform = checkAlias(platformName);
+    const resolvedPlatform = checkAlias(platform);
 
-    if (!platform) {
+    if (!resolvedPlatform) {
       send(res, 500, {
         error: "invalid_platform",
         message: "The specified platform is not valid",
@@ -148,7 +154,7 @@ const routes = ({
     // Get the latest version from the cache
     const latest = await loadCache();
 
-    if (!latest.platforms || !latest.platforms[platform]) {
+    if (!latest.platforms || !latest.platforms[resolvedPlatform]) {
       res.statusCode = 204;
       res.end();
 
@@ -165,7 +171,7 @@ const routes = ({
     // that will take a long time to fix and release
     // a patch update.
 
-    if (compare(latest.version, version) !== 0) {
+    if (latest.version && url && compare(latest.version, version) !== 0) {
       const { notes, pub_date } = latest;
 
       const patchedUrl = url.startsWith("https://") ? url : `https://${url}`;
@@ -175,8 +181,8 @@ const routes = ({
         notes,
         pub_date,
         url: shouldProxyPrivateDownload
-          ? `${patchedUrl}/download/${platformName}?update=true`
-          : latest.platforms[platform].url,
+          ? `${patchedUrl}/download/${resolvedPlatform}?update=true`
+          : latest.platforms[resolvedPlatform].url,
       };
 
       console.log("RESPONSE DATA:", responseData);
@@ -189,8 +195,9 @@ const routes = ({
     res.end();
   };
 
-  const squirrelWindows = async (req, res) => {
-    const { filename } = req.params;
+  const squirrelWindows: RouteHandler = async (req, res, options) => {
+    const { filename } = options;
+
     // Get the latest version from the cache
     const latest = await loadCache();
 
@@ -222,7 +229,7 @@ const routes = ({
       const nupkgAsset = latest.platforms["nupkg"];
 
       if (shouldProxyPrivateDownload) {
-        proxyPrivateDownload(nupkgAsset, req, res);
+        proxyPrivateDownload(token, nupkgAsset, req, res);
         return;
       }
 
@@ -236,7 +243,7 @@ const routes = ({
     }
   };
 
-  const overview = async (req, res) => {
+  const overview: RouteHandler = async (req, res, options) => {
     const latest = await loadCache();
 
     try {
@@ -245,7 +252,7 @@ const routes = ({
       const details = {
         account: config.account,
         repository: config.repository,
-        date: formatDistanceToNow(new Date(latest.pub_date), {
+        date: formatDistanceToNow(new Date(latest.pub_date || ""), {
           addSuffix: true,
         }),
         files: latest.platforms,
@@ -270,5 +277,3 @@ const routes = ({
     overview,
   };
 };
-
-export default routes;

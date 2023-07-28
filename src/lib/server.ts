@@ -1,30 +1,15 @@
 import dotenv from "dotenv";
+import type { RequestHandler } from "micro";
 
-import hazel from "./index.js";
+import { createHazel } from "./index.js";
 
 dotenv.config();
 
-const {
-  INTERVAL: interval,
-  ACCOUNT: account,
-  REPOSITORY: repository,
-  PRE: pre,
-  TOKEN: token,
-  URL: PRIVATE_BASE_URL,
-  VERCEL_URL,
-}: {
-  [key: string]: string | undefined;
-} = process.env;
-
-const url = VERCEL_URL || PRIVATE_BASE_URL;
-
-const server = hazel({
-  interval,
-  account,
-  repository,
-  pre,
-  token,
-  url,
+export const hazel: RequestHandler = createHazel({
+  interval: process.env.INTERVAL,
+  account: process.env.ACCOUNT,
+  repository: process.env.REPOSITORY,
+  pre: process.env.PRE,
+  token: process.env.TOKEN,
+  url: process.env.VERCEL_URL || process.env.PRIVATE_BASE_URL,
 });
-
-export default server;

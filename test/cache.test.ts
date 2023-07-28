@@ -1,6 +1,6 @@
-import Cache from "../src/lib/cache.js";
+import { Cache } from "../src/lib/cache.js";
 
-describe("Cache", () => {
+describe("cache", () => {
   it("should throw when account is not defined", () => {
     expect(() => {
       const config = { repository: "hyper" };
@@ -46,19 +46,5 @@ describe("Cache", () => {
 
     expect(typeof storage.version).toBe("string");
     expect(typeof storage.platforms).toBe("object");
-  });
-
-  it("should set platforms correctly", async () => {
-    const config = {
-      account: "vercel",
-      repository: "hyper",
-      token: process.env.TOKEN,
-      url: process.env.URL,
-    };
-
-    const cache = new Cache(config);
-    const storage = await cache.loadCache();
-
-    console.log(storage.platforms?.darwin);
   });
 });

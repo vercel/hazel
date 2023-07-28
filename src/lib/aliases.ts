@@ -20,7 +20,7 @@ for (const existingPlatform of keys) {
   );
 }
 
-const aliases = (platform: string): string | null => {
+export const checkAlias = (platform: string): string | null => {
   if (ALIASES[platform] !== undefined) {
     return platform;
   }
@@ -34,5 +34,3 @@ const aliases = (platform: string): string | null => {
 
   return null;
 };
-
-export default aliases;
