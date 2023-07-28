@@ -51,11 +51,11 @@ declare module "router" {
   }
 
   export type RoutedRequest = BaseRoutedRequest & {
-    [key: string]: unknown;
+    [key: string]: any;
   };
 
   export interface NextFunction {
-    (err?: unknown): void;
+    (err?: any): void;
   }
 
   type IRoute = Record<HttpMethods, IRouterHandler<IRoute>> & {
@@ -80,7 +80,7 @@ declare module "router" {
   }
 
   type ErrorRequestHandler = (
-    err: unknown,
+    err: any,
     req: IncomingRequest,
     res: OutgoingMessage,
     next: NextFunction,
@@ -119,5 +119,5 @@ declare module "router" {
     (options?: RouterOptions): IRouter & RequestHandler;
   }
 
-  const Router: RouterConstructor;
+  var Router: RouterConstructor;
 }

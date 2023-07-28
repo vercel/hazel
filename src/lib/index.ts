@@ -13,7 +13,7 @@ const hazel = (config: {
   token?: string;
   url?: string;
 }): ((req: IncomingMessage, res: ServerResponse) => void) => {
-  const router = new Router();
+  const router = Router();
   let cache: Cache | null = null;
 
   try {
