@@ -96,3 +96,5 @@ export const createHazel = (config: Config): RequestHandler => {
 
   return middleware;
 };
+
+export default createHazel;
