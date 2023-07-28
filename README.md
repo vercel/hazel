@@ -4,9 +4,7 @@
 ![Prettier](https://shields.io/badge/Prettier-ff69b4?logo=Prettier&logoColor=FFF&style=flat-square)
 ![NextJS](https://shields.io/badge/Vercel-000?logo=Vercel&logoColor=FFF&style=flat-square)
 
-> This is a fork of [Vercel Hazel](https://github.com/vercel/hazel) with the goal to keep updated as a drop-in solution when using [Electron Forge](https://github.com/electron/forge), which I use for [Horse Browser](https://browser.horse).
->
-> _Readme is not updated after this point_
+> This is a fork of the excellent [Hazel](https://github.com/vercel/hazel) project updated to work with TypeScript and the current Vercel API. It is being used to update [Horse Browser](https://browser.horse).
 
 This project lets you deploy an update server for [Electron](https://www.electronjs.org) apps with ease: You only need to click a button.
 
@@ -86,7 +84,7 @@ This endpoint was specifically crafted for the Windows platform (called "win32" 
 
 Since the [Windows version](https://github.com/Squirrel/Squirrel.Windows) of Squirrel (the software that powers auto updates inside [Electron](https://www.electronjs.org)) requires access to a file named "RELEASES" when checking for updates, this endpoint will respond with a cached version of the file that contains a download link to a `.nupkg` file (the application update).
 
-## Programmatic Usage
+<!-- ## Programmatic Usage
 
 You can add Hazel to an existing HTTP server, if you want. For example, this will allow you to implement custom analytics on certain paths.
 
@@ -96,7 +94,7 @@ import hazel from "@PascalPixel/hazel";
 http.createServer((req, res) => {
   hazel(req, res);
 });
-```
+``` -->
 
 ## Contributing
 
@@ -106,8 +104,4 @@ http.createServer((req, res) => {
 
 ## Credits
 
-Huge thanks to my ([@leo](https://github.com/leo)'s) friend [Andy](http://twitter.com/andybitz_), who suggested the name "Hazel" (since the auto updater software inside [Electron](https://www.electronjs.org) is called "Squirrel") and [Matheus](https://twitter.com/matheusfrndes) for collecting ideas with me.
-
-## Author
-
-Leo Lamprecht ([@notquiteleo](https://twitter.com/notquiteleo)) - [Vercel](https://vercel.com)
+Huge thanks to Leo Lamprecht ([@notquiteleo](https://twitter.com/notquiteleo)) for creating the original Hazel.
