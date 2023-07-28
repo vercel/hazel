@@ -1,14 +1,19 @@
 # Hazel
 
-[![CircleCI](https://circleci.com/gh/vercel/hazel/tree/master.svg?style=svg)](https://circleci.com/gh/vercel/hazel/tree/master)
-[![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
+![TypeScript](https://shields.io/badge/TypeScript-3178C6?logo=TypeScript&logoColor=FFF&style=flat-square)
+![Prettier](https://shields.io/badge/Prettier-ff69b4?logo=Prettier&logoColor=FFF&style=flat-square)
+![NextJS](https://shields.io/badge/Vercel-000?logo=Vercel&logoColor=FFF&style=flat-square)
+
+> This is a fork of [Vercel Hazel](https://github.com/vercel/hazel) with the goal to keep updated as a drop-in solution when using [Electron Forge](https://github.com/electron/forge), which I use for [Horse Browser](https://browser.horse).
+>
+> _Readme is not updated after this point_
 
 This project lets you deploy an update server for [Electron](https://www.electronjs.org) apps with ease: You only need to click a button.
 
 The result will be faster and more lightweight than any other solution out there! :rocket:
 
 - Recommended by Electron [here](https://www.electronjs.org/docs/tutorial/updates#deploying-an-update-server)
-- Built on top of [micro](https://github.com/zeit/micro), the tiniest HTTP framework for Node.js
+- Built on top of [micro](https://github.com/vercel/micro), the tiniest HTTP framework for Node.js
 - Pulls the latest release data from [GitHub Releases](https://help.github.com/articles/creating-releases/) and caches it in memory
 - Refreshes the cache every **15 minutes** (custom interval [possible](#options))
 - When asked for an update, it returns the link to the GitHub asset directly (saves bandwidth)
@@ -19,7 +24,7 @@ The result will be faster and more lightweight than any other solution out there
 
 Open this link in a new tab to deploy Hazel on [Vercel](https://vercel.com):
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fhazel&env=ACCOUNT,REPOSITORY&envDescription=Enter%20your%20GitHub%20user%2Forg%20slug%20and%20the%20name%20of%20the%20repository%20that%20contains%20your%20Electron%20app.&envLink=https%3A%2F%2Fgithub.com%2Fvercel%2Fhazel%23usage&repo-name=hazel-update-server)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2FPascalPixel%2Fhazel&env=ACCOUNT,REPOSITORY&envDescription=Enter%20your%20GitHub%20user%2Forg%20slug%20and%20the%20name%20of%20the%20repository%20that%20contains%20your%20Electron%20app.&envLink=https%3A%2F%2Fgithub.com%2FPascalPixel%2Fhazel%23usage&repo-name=hazel-update-server)
 
 Once it's deployed, paste the deployment address into your code (please keep in mind that updates should only occur in the production version of the app, not while developing):
 
@@ -86,11 +91,11 @@ Since the [Windows version](https://github.com/Squirrel/Squirrel.Windows) of Squ
 You can add Hazel to an existing HTTP server, if you want. For example, this will allow you to implement custom analytics on certain paths.
 
 ```js
-const hazel = require('hazel-server')
+import hazel from "@PascalPixel/hazel";
 
 http.createServer((req, res) => {
-  hazel(req, res)
-})
+  hazel(req, res);
+});
 ```
 
 ## Contributing
