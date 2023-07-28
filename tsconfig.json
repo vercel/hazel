@@ -7,7 +7,7 @@
     "esModuleInterop": true,
     "skipLibCheck": false,
     "forceConsistentCasingInFileNames": true,
-    "outDir": "./",
+    "outDir": "./lib",
     "baseUrl": "./"
   },
   "include": ["src/**/*.ts"],
