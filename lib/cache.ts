@@ -2,7 +2,7 @@ import retry from "async-retry";
 import fetch from "cross-fetch";
 import ms from "ms";
 
-import type { HazelConfig } from "./index.js";
+import type { Config } from "./index.js";
 import { patchPlatform } from "./utils.js";
 
 type PlatformType = {
@@ -28,41 +28,34 @@ type LatestType = {
 };
 
 export class HazelCache {
-  config: HazelConfig;
-  latest: LatestType;
-  lastUpdate: number | null;
-  constructor(config: HazelConfig) {
-    const { account, repository, token, url } = config;
-    this.config = config;
+  config: Config;
+  latest: LatestType = {};
+  lastUpdate: number | null = null;
 
-    if (!account || !repository) {
+  constructor(config: Config) {
+    this.config = { interval: 15, ...config };
+    if (!config.account || !config.repository) {
       throw new Error("Neither ACCOUNT, nor REPOSITORY are defined");
     }
-
-    if (token && !url) {
+    if (config.token && !config.url) {
       throw new Error(
         "Neither VERCEL_URL, nor URL are defined, which are mandatory for private repo mode",
       );
     }
-
-    this.latest = {};
-    this.lastUpdate = null;
-
-    this.cacheReleaseList = this.cacheReleaseList.bind(this);
-    this.refreshCache = this.refreshCache.bind(this);
-    this.loadCache = this.loadCache.bind(this);
-    this.isOutdated = this.isOutdated.bind(this);
   }
 
   async cacheReleaseList(url: string) {
     try {
-      const { token } = this.config;
       const headers: RequestInit["headers"] = {
         Accept: "application/octet-stream",
       };
 
-      if (token && typeof token === "string" && token.length > 0) {
-        headers.Authorization = `token ${token}`;
+      if (
+        this.config.token &&
+        typeof this.config.token === "string" &&
+        this.config.token.length > 0
+      ) {
+        headers.Authorization = `token ${this.config.token}`;
       }
 
       const { body } = await retry(
@@ -98,27 +91,28 @@ export class HazelCache {
 
   async refreshCache() {
     try {
-      const { account, repository, pre, token } = this.config;
-      const repo = account + "/" + repository;
+      const repo = this.config.account + "/" + this.config.repository;
       const url = `https://api.github.com/repos/${repo}/releases?per_page=100`;
       const headers: RequestInit["headers"] = {
         Accept: "application/vnd.github.preview",
       };
 
-      if (token && typeof token === "string" && token.length > 0) {
-        headers.Authorization = `token ${token}`;
+      if (
+        this.config.token &&
+        typeof this.config.token === "string" &&
+        this.config.token.length > 0
+      ) {
+        headers.Authorization = `token ${this.config.token}`;
       }
 
       const response = await retry(
         async () => {
           const response = await fetch(url, { headers });
-
           if (response.status !== 200) {
             throw new Error(
               `GitHub API responded with ${response.status} for url ${url}`,
             );
           }
-
           return response;
         },
         { retries: 3 },
@@ -131,7 +125,7 @@ export class HazelCache {
       }
 
       const release = data.find((item) => {
-        const isPre = Boolean(pre) === Boolean(item.prerelease);
+        const isPre = Boolean(this.config.pre) === Boolean(item.prerelease);
         return !item.draft && isPre;
       });
 
@@ -139,17 +133,15 @@ export class HazelCache {
         return;
       }
 
-      const { tag_name } = release;
-
-      if (this.latest.version === tag_name) {
+      if (this.latest.version === release.tag_name) {
         console.log("Cached version is the same as latest");
         this.lastUpdate = Date.now();
         return;
       }
 
-      console.log(`Caching version ${tag_name}...`);
+      console.log(`Caching version ${release.tag_name}...`);
 
-      this.latest.version = tag_name;
+      this.latest.version = release.tag_name;
       this.latest.notes = release.body;
       this.latest.pub_date = release.published_at;
 
@@ -184,7 +176,7 @@ export class HazelCache {
         };
       }
 
-      console.log(`Finished caching version ${tag_name}`);
+      console.log(`Finished caching version ${release.tag_name}`);
       this.lastUpdate = Date.now();
     } catch (err) {
       console.error("Failed to refresh cache", err);
@@ -193,10 +185,10 @@ export class HazelCache {
 
   isOutdated() {
     try {
-      const { lastUpdate, config } = this;
-      const { interval = 15 } = config;
-
-      if (lastUpdate && Date.now() - lastUpdate > ms(`${interval}m`)) {
+      if (
+        this.lastUpdate &&
+        Date.now() - this.lastUpdate > ms(`${this.config.interval}m`)
+      ) {
         return true;
       }
 
@@ -212,18 +204,13 @@ export class HazelCache {
   // only once when the index file is parsed
   async loadCache() {
     try {
-      const { latest, refreshCache, isOutdated, lastUpdate } = this;
-
-      if (!lastUpdate || isOutdated()) {
-        await refreshCache();
-      }
-
-      const storage = Object.assign({}, latest);
+      if (!this.lastUpdate || this.isOutdated()) await this.refreshCache();
+      const storage = { ...this.latest };
       console.log(storage);
       return storage;
     } catch (err) {
       console.error("Failed to load cache", err);
-      return {};
+      return { version: "", notes: "", pub_date: "", platforms: {}, files: {} };
     }
   }
 }

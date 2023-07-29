@@ -4,7 +4,7 @@ import expressUserAgent from "express-useragent";
 import fs from "fs/promises";
 import handlebars from "handlebars";
 import type { IncomingMessage, ServerResponse } from "http";
-import { send } from "micro";
+import { RequestHandler, send } from "micro";
 import path from "path";
 import { compare, valid } from "semver";
 import urlHelpers from "url";
@@ -12,25 +12,22 @@ import urlHelpers from "url";
 import { HazelCache } from "./cache.js";
 import { resolvePlatform } from "./utils.js";
 
-export type HazelError = Error & { code?: string };
-export interface HazelConfig {
-  interval?: string;
+type RequestHandlerProducer = (
+  req: IncomingMessage,
+  res: ServerResponse,
+  options?: Record<string, string>,
+) => unknown;
+
+export interface Config {
+  interval?: number;
   account?: string;
   repository?: string;
   pre?: string;
   token?: string;
   url?: string;
 }
-type HazelRequest = IncomingMessage;
-type HazelResponse = ServerResponse;
-type HazelHandler = (req: HazelRequest, res: HazelResponse) => unknown;
-type HazelWrappedHandler = (
-  req: HazelRequest,
-  res: HazelResponse,
-  options?: Record<string, string>,
-) => unknown;
 
-export function hazel(config: HazelConfig): HazelHandler {
+export function hazel(config: Config): RequestHandler {
   // Create a new cache instance
   const cache = new HazelCache(config);
 
@@ -59,7 +56,7 @@ export function hazel(config: HazelConfig): HazelHandler {
   ];
 
   // Handle requests
-  return (req: HazelRequest, res: HazelResponse) => {
+  return (req: IncomingMessage, res: ServerResponse) => {
     try {
       if (!req.url) {
         send(res, 400, "Bad Request");
@@ -111,13 +108,8 @@ function downloadHandler({
   config,
 }: {
   cache: HazelCache;
-  config: HazelConfig;
-}): HazelWrappedHandler {
-  const { loadCache } = cache;
-  const { token } = config;
-  const shouldProxyPrivateDownload =
-    token && typeof token === "string" && token.length > 0;
-
+  config: Config;
+}): RequestHandlerProducer {
   return async (req, res) => {
     const userAgent = expressUserAgent.parse(req.headers["user-agent"] || "");
     const params = urlHelpers.parse(req.url || "", true).query;
@@ -134,16 +126,20 @@ function downloadHandler({
     }
 
     // Get the latest version from the cache
-    const { platforms } = await loadCache();
+    const { platforms } = await cache.loadCache();
 
     if (!resolvedPlatform || !platforms || !platforms[resolvedPlatform]) {
       send(res, 404, "No download available for your platform!");
       return;
     }
 
-    if (shouldProxyPrivateDownload) {
+    if (
+      config.token &&
+      typeof config.token === "string" &&
+      config.token.length > 0
+    ) {
       const asset = platforms[resolvedPlatform];
-      proxyPrivateDownload(token, asset.api_url, res);
+      proxyPrivateDownload(config.token, asset.api_url, res);
       return;
     }
 
@@ -160,11 +156,8 @@ function downloadPlatformHandler({
   config,
 }: {
   cache: HazelCache;
-  config: HazelConfig;
-}): HazelWrappedHandler {
-  const { loadCache } = cache;
-  const { token } = config;
-
+  config: Config;
+}): RequestHandlerProducer {
   return async (req, res, options) => {
     if (!options) {
       send(res, 500, "No options provided");
@@ -187,7 +180,7 @@ function downloadPlatformHandler({
     }
 
     // Get the latest version from the cache
-    const latest = await loadCache();
+    const latest = await cache.loadCache();
     console.log("CACHE: ", latest);
 
     // Check platform for appropiate aliases
@@ -203,10 +196,14 @@ function downloadPlatformHandler({
       return;
     }
 
-    if (token && typeof token === "string" && token.length > 0) {
+    if (
+      config.token &&
+      typeof config.token === "string" &&
+      config.token.length > 0
+    ) {
       const asset = latest.platforms[resolvedPlatform];
       if (!asset) return;
-      proxyPrivateDownload(token, asset.api_url, res);
+      proxyPrivateDownload(config.token, asset.api_url, res);
       return;
     }
 
@@ -223,13 +220,8 @@ function updateHandler({
   config,
 }: {
   cache: HazelCache;
-  config: HazelConfig;
-}): HazelWrappedHandler {
-  const { loadCache } = cache;
-  const { token, url } = config;
-  const shouldProxyPrivateDownload =
-    token && typeof token === "string" && token.length > 0;
-
+  config: Config;
+}): RequestHandlerProducer {
   return async (req, res, options) => {
     if (!options) {
       send(res, 500, {
@@ -263,7 +255,7 @@ function updateHandler({
     }
 
     // Get the latest version from the cache
-    const latest = await loadCache();
+    const latest = await cache.loadCache();
 
     if (!latest.platforms || !latest.platforms[resolvedPlatform]) {
       res.statusCode = 204;
@@ -282,18 +274,27 @@ function updateHandler({
     // that will take a long time to fix and release
     // a patch update.
 
-    if (latest.version && url && compare(latest.version, version) !== 0) {
+    if (
+      latest.version &&
+      config.url &&
+      compare(latest.version, version) !== 0
+    ) {
       const { notes, pub_date } = latest;
 
-      const patchedUrl = url.startsWith("https://") ? url : `https://${url}`;
+      const patchedUrl = config.url.startsWith("https://")
+        ? config.url
+        : `https://${config.url}`;
 
       const responseData = {
         name: latest.version,
         notes,
         pub_date,
-        url: shouldProxyPrivateDownload
-          ? `${patchedUrl}/download/${resolvedPlatform}?update=true`
-          : latest.platforms[resolvedPlatform].url,
+        url:
+          config.token &&
+          typeof config.token === "string" &&
+          config.token.length > 0
+            ? `${patchedUrl}/download/${resolvedPlatform}?update=true`
+            : latest.platforms[resolvedPlatform].url,
       };
 
       console.log("RESPONSE DATA:", responseData);
@@ -312,13 +313,8 @@ function updateWin32Handler({
   config,
 }: {
   cache: HazelCache;
-  config: HazelConfig;
-}): HazelWrappedHandler {
-  const { loadCache } = cache;
-  const { token } = config;
-  const shouldProxyPrivateDownload =
-    token && typeof token === "string" && token.length > 0;
-
+  config: Config;
+}): RequestHandlerProducer {
   return async (req, res, options) => {
     if (!options) {
       send(res, 500, {
@@ -332,7 +328,7 @@ function updateWin32Handler({
     const { filename } = options;
 
     // Get the latest version from the cache
-    const latest = await loadCache();
+    const latest = await cache.loadCache();
 
     if (filename.toLowerCase().startsWith("releases")) {
       if (!latest.files || !latest.files.RELEASES) {
@@ -361,9 +357,13 @@ function updateWin32Handler({
 
       const asset = latest.platforms["nupkg"];
 
-      if (shouldProxyPrivateDownload) {
+      if (
+        config.token &&
+        typeof config.token === "string" &&
+        config.token.length > 0
+      ) {
         if (!asset) return;
-        proxyPrivateDownload(token, asset.api_url, res);
+        proxyPrivateDownload(config.token, asset.api_url, res);
         return;
       }
 
@@ -383,12 +383,10 @@ function overviewHandler({
   config,
 }: {
   cache: HazelCache;
-  config: HazelConfig;
-}): HazelWrappedHandler {
-  const { loadCache } = cache;
-
+  config: Config;
+}): RequestHandlerProducer {
   return async (req, res) => {
-    const latest = await loadCache();
+    const latest = await cache.loadCache();
 
     try {
       const render = await prepareView();
@@ -423,7 +421,7 @@ async function prepareView() {
 async function proxyPrivateDownload(
   token: string,
   apiUrl: string,
-  res: HazelResponse,
+  res: ServerResponse,
 ) {
   const redirect = "manual";
   const headers = {
