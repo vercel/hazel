@@ -31,37 +31,47 @@ type HazelWrappedHandler = (
 ) => unknown;
 
 export function hazel(config: HazelConfig): HazelHandler {
-  try {
-    // Create a new cache instance
-    const cache = new HazelCache(config);
+  // Create a new cache instance
+  const cache = new HazelCache(config);
 
-    // Set up routes and handlers
-    const routes = [
-      {
-        path: "/",
-        handler: overviewHandler({ cache, config }),
-      },
-      {
-        path: "/download",
-        handler: downloadHandler({ cache, config }),
-      },
-      {
-        path: "/download/:platform",
-        handler: downloadPlatformHandler({ cache, config }),
-      },
-      {
-        path: "/update/:platform/:version",
-        handler: updateHandler({ cache, config }),
-      },
-      {
-        path: "/update/win32/:version/:filename",
-        handler: updateWin32Handler({ cache, config }),
-      },
-    ];
+  // Set up routes and handlers
+  const routes = [
+    {
+      path: "/",
+      handler: overviewHandler({ cache, config }),
+    },
+    {
+      path: "/download",
+      handler: downloadHandler({ cache, config }),
+    },
+    {
+      path: "/download/:platform",
+      handler: downloadPlatformHandler({ cache, config }),
+    },
+    {
+      path: "/update/:platform/:version",
+      handler: updateHandler({ cache, config }),
+    },
+    {
+      path: "/update/win32/:version/:filename",
+      handler: updateWin32Handler({ cache, config }),
+    },
+  ];
 
-    // Handle requests
-    return (req: HazelRequest, res: HazelResponse) => {
-      const { pathname } = new URL(req.url || "", config.url);
+  // Handle requests
+  return (req: HazelRequest, res: HazelResponse) => {
+    try {
+      let pathname;
+      try {
+        if (!req.url) throw new Error("No URL provided");
+        const url = new URL(req.url, `http://${req.headers.host}`);
+        pathname = url.pathname;
+      } catch (err) {
+        console.warn("Bad Request", req.url);
+        send(res, 400, "Bad Request");
+        return;
+      }
+
       const paths = pathname.split("/").filter(Boolean);
 
       for (const route of routes) {
@@ -93,38 +103,13 @@ export function hazel(config: HazelConfig): HazelHandler {
         }
       }
 
-      console.warn("No route found for request", req.url);
-      res.statusCode = 404;
-      res.end(
-        JSON.stringify({
-          error: { code: "page_not_found", message: "Not Found" },
-        }),
-      );
-    };
-  } catch (err) {
-    const error = err as HazelError;
-    if (error.code) {
-      // This is a known error, so we can return a 400
-      return (req, res) => {
-        res.statusCode = 400;
-        res.end(
-          JSON.stringify({
-            error: { code: error.code, message: error.message },
-          }),
-        );
-      };
-    } else {
-      console.error("Unknown error", error);
-      return (req, res) => {
-        res.statusCode = 500;
-        res.end(
-          JSON.stringify({
-            error: { code: "unknown", message: "Internal Server Error" },
-          }),
-        );
-      };
+      send(res, 404, "Not Found");
+      return;
+    } catch (err) {
+      send(res, 500, "Internal Server Error");
+      return;
     }
-  }
+  };
 }
 
 function downloadHandler({
