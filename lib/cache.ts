@@ -2,59 +2,43 @@ import retry from "async-retry";
 import fetch from "cross-fetch";
 import ms from "ms";
 
-import type { Config } from "./index.js";
-import { patchPlatform } from "./platform.js";
+import type { HazelConfig, HazelError } from "./index.js";
+import { patchPlatform } from "./utils.js";
 
-export type CustomError = Error & { code: string };
-
-async function convertStream(
-  stream: ReadableStream<Uint8Array> | null,
-): Promise<string> {
-  if (!stream) return "";
-  const reader = stream.getReader();
-  const decoder = new TextDecoder();
-  let result = "";
-  let done = false;
-  while (!done) {
-    const { done: readDone, value } = await reader.read();
-    done = readDone;
-    if (!done) {
-      result += decoder.decode(value);
-    }
-  }
-  return result;
-}
-
-export type Platform = {
-  name: string;
-  api_url: string;
-  url: string;
-  content_type: string;
-  size: number;
+type PlatformType = {
+  [key: string]: {
+    name: string;
+    api_url: string;
+    url: string;
+    content_type: string;
+    size: number;
+  };
 };
 
-export class Cache {
-  config: Config;
-  latest: {
-    version?: string;
-    notes?: string;
-    pub_date?: string;
-    platforms?: {
-      [key: string]: Platform;
-    };
-    files?: {
-      [key: string]: string;
-    };
-  };
+type FilesType = {
+  [key: string]: string;
+};
+
+type LatestType = {
+  version?: string;
+  notes?: string;
+  pub_date?: string;
+  platforms?: PlatformType;
+  files?: FilesType;
+};
+
+export class HazelCache {
+  config: HazelConfig;
+  latest: LatestType;
   lastUpdate: number | null;
-  constructor(config: Config) {
+  constructor(config: HazelConfig) {
     const { account, repository, token, url } = config;
     this.config = config;
 
     if (!account || !repository) {
       const error = new Error(
         "Neither ACCOUNT, nor REPOSITORY are defined",
-      ) as CustomError;
+      ) as HazelError;
       error.code = "missing_configuration_properties";
       throw error;
     }
@@ -62,7 +46,7 @@ export class Cache {
     if (token && !url) {
       const error = new Error(
         "Neither VERCEL_URL, nor URL are defined, which are mandatory for private repo mode",
-      ) as CustomError;
+      ) as HazelError;
       error.code = "missing_configuration_properties";
       throw error;
     }
@@ -213,7 +197,7 @@ export class Cache {
     } catch (err) {
       console.error(err);
 
-      const error = err as CustomError;
+      const error = err as HazelError;
       if (error.code === "missing_configuration_properties") {
         throw err;
       }
@@ -257,4 +241,22 @@ export class Cache {
       return {};
     }
   }
+}
+
+async function convertStream(
+  stream: ReadableStream<Uint8Array> | null,
+): Promise<string> {
+  if (!stream) return "";
+  const reader = stream.getReader();
+  const decoder = new TextDecoder();
+  let result = "";
+  let done = false;
+  while (!done) {
+    const { done: readDone, value } = await reader.read();
+    done = readDone;
+    if (!done) {
+      result += decoder.decode(value);
+    }
+  }
+  return result;
 }

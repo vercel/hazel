@@ -9,6 +9,6 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": "./"
   },
-  "include": ["lib/**/*.ts", "api/**/*.ts"],
+  "include": ["*.ts", "lib/**/*.ts", "api/**/*.ts"],
   "exclude": ["node_modules"]
 }

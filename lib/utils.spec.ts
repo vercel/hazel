@@ -1,6 +1,6 @@
-import { patchPlatform } from "./platform.js";
+import { patchPlatform, resolvePlatform } from "./utils.js";
 
-describe("platform", () => {
+describe("patchPlatform", () => {
   it("should parse mac", () => {
     const result = patchPlatform("hyper-2.1.1-mac.zip");
     expect(result).toBe("darwin");
@@ -69,5 +69,22 @@ describe("platform", () => {
   it("should return false for unknown files", () => {
     const result = patchPlatform("hi.txt");
     expect(result).toBe(false);
+  });
+});
+
+describe("resolvePlatform", () => {
+  it("should return the correct platform", () => {
+    const result = resolvePlatform("mac");
+    expect(result).toBe("darwin");
+  });
+
+  it("should return the platform when the platform is provided", () => {
+    const result = resolvePlatform("darwin");
+    expect(result).toBe("darwin");
+  });
+
+  it("should return null if no platform is found", () => {
+    const result = resolvePlatform("test");
+    expect(result).toBe(null);
   });
 });
