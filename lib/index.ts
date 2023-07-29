@@ -61,18 +61,12 @@ export function hazel(config: HazelConfig): HazelHandler {
   // Handle requests
   return (req: HazelRequest, res: HazelResponse) => {
     try {
-      let pathname;
-      try {
-        if (!req.url) throw new Error("No URL provided");
-        const url = new URL(req.url, `http://${req.headers.host}`);
-        pathname = url.pathname;
-      } catch (err) {
-        console.warn("Bad Request", req.url);
+      if (!req.url) {
         send(res, 400, "Bad Request");
         return;
       }
 
-      const paths = pathname.split("/").filter(Boolean);
+      const paths = req.url.split("/").filter(Boolean);
 
       for (const route of routes) {
         const routePaths = route.path.split("/").filter(Boolean);
