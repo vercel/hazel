@@ -19,7 +19,7 @@ type RequestHandlerProducer = (
 ) => unknown;
 
 export interface Config {
-  interval?: number;
+  interval?: string;
   account?: string;
   repository?: string;
   pre?: string;
