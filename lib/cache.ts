@@ -33,7 +33,7 @@ export class HazelCache {
   lastUpdate: number | null = null;
 
   constructor(config: Config) {
-    this.config = { interval: "15", ...config };
+    this.config = config;
     if (!config.account || !config.repository) {
       throw new Error("Neither ACCOUNT, nor REPOSITORY are defined");
     }
