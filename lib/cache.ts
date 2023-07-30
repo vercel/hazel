@@ -3,33 +3,38 @@ import fetch from "cross-fetch";
 import ms from "ms";
 
 import type { Config } from "./index.js";
-import { patchPlatform } from "./utils.js";
+import { Platform, getPlatform } from "./utils.js";
 
-type PlatformType = {
-  [key: string]: {
-    name: string;
-    api_url: string;
-    url: string;
-    content_type: string;
-    size: number;
+interface Latest {
+  version: string | null;
+  notes: string | null;
+  pubDate: string | null;
+  platforms: Map<
+    Platform,
+    {
+      name: string;
+      api_url: string;
+      url: string;
+      content_type: string;
+      size: number;
+    }
+  >;
+  files: {
+    RELEASES: string | null;
   };
-};
-
-type FilesType = {
-  [key: string]: string;
-};
-
-type LatestType = {
-  version?: string;
-  notes?: string;
-  pub_date?: string;
-  platforms?: PlatformType;
-  files?: FilesType;
-};
+}
 
 export class HazelCache {
   config: Config;
-  latest: LatestType = {};
+  latest: Latest = {
+    version: null,
+    notes: null,
+    pubDate: null,
+    platforms: new Map(),
+    files: {
+      RELEASES: null,
+    },
+  };
   lastUpdate: number | null = null;
 
   constructor(config: Config) {
@@ -44,7 +49,7 @@ export class HazelCache {
     }
   }
 
-  async cacheReleaseList(url: string) {
+  async cacheReleaseList(url: string): Promise<string | null> {
     try {
       const headers: RequestInit["headers"] = {
         Accept: "application/octet-stream",
@@ -58,34 +63,23 @@ export class HazelCache {
         headers.Authorization = `token ${this.config.token}`;
       }
 
-      const { body } = await retry(
+      const response = await retry(
         async () => {
           const response = await fetch(url, { headers });
-
           if (response.status !== 200) {
             throw new Error(
               `Tried to cache RELEASES, but failed fetching ${url}, status ${response.status}`,
             );
           }
-
           return response;
         },
         { retries: 3 },
       );
 
-      const content = await convertStream(body);
-      const matches = content.match(/[^ ]*\.nupkg/gim);
-
-      if (!matches || matches.length === 0) {
-        throw new Error(
-          `Tried to cache RELEASES, but failed. RELEASES content doesn't contain nupkg`,
-        );
-      }
-
-      return content;
+      return await convertStream(response.body);
     } catch (err) {
       console.error("Failed to cache RELEASES", err);
-      return "";
+      return null;
     }
   }
 
@@ -143,37 +137,35 @@ export class HazelCache {
 
       this.latest.version = release.tag_name;
       this.latest.notes = release.body;
-      this.latest.pub_date = release.published_at;
+      this.latest.pubDate = release.published_at;
 
       // Clear list of download links
-      this.latest.platforms = {};
+      this.latest.platforms = new Map();
 
       for (const asset of release.assets) {
-        const { name, browser_download_url, url, content_type, size } = asset;
-
-        if (name === "RELEASES") {
+        if (asset.name === "RELEASES") {
           try {
-            if (!this.latest.files) this.latest.files = {};
-            this.latest.files.RELEASES = await this.cacheReleaseList(url);
+            this.latest.files.RELEASES = await this.cacheReleaseList(asset.url);
           } catch (err) {
             console.error("Failed to cache release list", err);
           }
           continue;
         }
 
-        const platform = patchPlatform(name);
+        // Get platform and pacmanitecture from asset name
+        const platformArch = getPlatform(asset.name);
 
-        if (!platform) {
-          continue;
-        }
+        // Skip if platform is not supported
+        if (!platformArch) continue;
 
-        this.latest.platforms[platform] = {
-          name,
-          api_url: url,
-          url: browser_download_url,
-          content_type,
-          size: Math.round((size / 1000000) * 10) / 10,
-        };
+        // Store download link
+        this.latest.platforms.set(platformArch, {
+          name: asset.name,
+          api_url: asset.url,
+          url: asset.browser_download_url,
+          content_type: asset.content_type,
+          size: Math.round((asset.size / 1000000) * 10) / 10,
+        });
       }
 
       console.log(`Finished caching version ${release.tag_name}`);
@@ -202,7 +194,7 @@ export class HazelCache {
   // This is a method returning the cache
   // because the cache would otherwise be loaded
   // only once when the index file is parsed
-  async loadCache() {
+  async loadCache(): Promise<Latest> {
     try {
       if (!this.lastUpdate || this.isOutdated()) await this.refreshCache();
       const storage = { ...this.latest };
@@ -210,7 +202,15 @@ export class HazelCache {
       return storage;
     } catch (err) {
       console.error("Failed to load cache", err);
-      return { version: "", notes: "", pub_date: "", platforms: {}, files: {} };
+      const storage = {
+        version: null,
+        notes: null,
+        pubDate: null,
+        platforms: new Map(),
+        files: { RELEASES: null },
+      };
+      console.log(storage);
+      return storage;
     }
   }
 }
@@ -224,10 +224,10 @@ async function convertStream(
   let result = "";
   let done = false;
   while (!done) {
-    const { done: readDone, value } = await reader.read();
-    done = readDone;
+    const readResult = await reader.read();
+    done = readResult.done;
     if (!done) {
-      result += decoder.decode(value);
+      result += decoder.decode(readResult.value);
     }
   }
   return result;

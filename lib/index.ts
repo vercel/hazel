@@ -7,10 +7,10 @@ import type { IncomingMessage, ServerResponse } from "http";
 import { RequestHandler, send } from "micro";
 import path from "path";
 import { compare, valid } from "semver";
-import urlHelpers from "url";
+import { parse } from "url";
 
 import { HazelCache } from "./cache.js";
-import { resolvePlatform } from "./utils.js";
+import { Platform, getPlatform, guessPlatform } from "./utils.js";
 
 type RequestHandlerProducer = (
   req: IncomingMessage,
@@ -59,8 +59,7 @@ export function hazel(config: Config): RequestHandler {
   return (req: IncomingMessage, res: ServerResponse) => {
     try {
       if (!req.url) {
-        send(res, 400, "Bad Request");
-        return;
+        return send(res, 400, "Bad Request");
       }
 
       const paths = req.url.split("/").filter(Boolean);
@@ -94,11 +93,9 @@ export function hazel(config: Config): RequestHandler {
         }
       }
 
-      send(res, 404, "Not Found");
-      return;
+      return send(res, 404, "Not Found");
     } catch (err) {
-      send(res, 500, "Internal Server Error");
-      return;
+      return send(res, 500, "Internal Server Error");
     }
   };
 }
@@ -111,26 +108,37 @@ function downloadHandler({
   config: Config;
 }): RequestHandlerProducer {
   return async (req, res) => {
-    const userAgent = expressUserAgent.parse(req.headers["user-agent"] || "");
-    const params = urlHelpers.parse(req.url || "", true).query;
+    const params = parse(req.url || "", true).query;
     const isUpdate = params && params.update;
+    const userAgent = expressUserAgent.parse(req.headers["user-agent"] || "");
 
-    let resolvedPlatform;
+    let platform: Platform | null = null;
 
-    if (userAgent.isMac && isUpdate) {
-      resolvedPlatform = "darwin";
-    } else if (userAgent.isMac && !isUpdate) {
-      resolvedPlatform = "dmg";
+    // Best guess for platform based on user agent
+    if (userAgent.isMac) {
+      if (isUpdate) {
+        platform = "zip-arm64";
+      } else {
+        platform = "dmg-arm64";
+      }
     } else if (userAgent.isWindows) {
-      resolvedPlatform = "exe";
+      if (isUpdate) {
+        platform = "nupkg-x64";
+      } else {
+        platform = "exe-x64";
+      }
     }
 
-    // Get the latest version from the cache
     const { platforms } = await cache.loadCache();
 
-    if (!resolvedPlatform || !platforms || !platforms[resolvedPlatform]) {
-      send(res, 404, "No download available for your platform!");
-      return;
+    if (!platform || !platforms || !platforms.has(platform)) {
+      return send(res, 404, "No download available for your platform!");
+    }
+
+    const asset = platforms.get(platform);
+
+    if (!asset) {
+      return send(res, 404, "No download available for your platform!");
     }
 
     if (
@@ -138,16 +146,10 @@ function downloadHandler({
       typeof config.token === "string" &&
       config.token.length > 0
     ) {
-      const asset = platforms[resolvedPlatform];
-      proxyPrivateDownload(config.token, asset.api_url, res);
-      return;
+      return proxyPrivateDownload(config.token, asset.api_url, res);
     }
 
-    res.writeHead(302, {
-      Location: platforms[resolvedPlatform].url,
-    });
-
-    res.end();
+    return send(res, 302, { Location: asset.url });
   };
 }
 
@@ -160,40 +162,38 @@ function downloadPlatformHandler({
 }): RequestHandlerProducer {
   return async (req, res, options) => {
     if (!options) {
-      send(res, 500, "No options provided");
-      return;
+      return send(res, 400, "No options provided");
+    }
+    if (!options.platform) {
+      return send(res, 400, "No platform provided");
     }
 
-    const { platform } = options;
+    const params = parse(req.url || "", true).query;
 
-    const params = urlHelpers.parse(req.url || "", true).query;
-    const isUpdate = params && params.update;
+    // Get the platform from the user input platform
+    let platform = getPlatform(options.platform);
 
-    let resolvedPlatform: string | null = platform;
-
-    if (resolvedPlatform === "mac" && !isUpdate) {
-      resolvedPlatform = "dmg";
+    // If the platform is not valid, try to guess it
+    if (!platform) {
+      platform = guessPlatform(options.platform, !!params?.update);
     }
 
-    if (resolvedPlatform === "mac_arm64" && !isUpdate) {
-      resolvedPlatform = "dmg_arm64";
+    if (!platform) {
+      return send(res, 400, "The specified platform is not valid");
     }
 
     // Get the latest version from the cache
     const latest = await cache.loadCache();
     console.log("CACHE: ", latest);
 
-    // Check platform for appropiate aliases
-    resolvedPlatform = resolvePlatform(resolvedPlatform);
-
-    if (!resolvedPlatform) {
-      send(res, 500, "The specified platform is not valid");
-      return;
+    if (!latest.platforms || !latest.platforms.has(platform)) {
+      return send(res, 404, "No download available for your platform");
     }
 
-    if (!latest.platforms || !latest.platforms[resolvedPlatform]) {
-      send(res, 404, "No download available for your platform");
-      return;
+    const asset = latest.platforms.get(platform);
+
+    if (!asset) {
+      return send(res, 404, "No download available for your platform");
     }
 
     if (
@@ -201,17 +201,11 @@ function downloadPlatformHandler({
       typeof config.token === "string" &&
       config.token.length > 0
     ) {
-      const asset = latest.platforms[resolvedPlatform];
-      if (!asset) return;
       proxyPrivateDownload(config.token, asset.api_url, res);
       return;
     }
 
-    res.writeHead(302, {
-      Location: latest.platforms[resolvedPlatform].url,
-    });
-
-    res.end();
+    return send(res, 302, { Location: asset.url });
   };
 }
 
@@ -224,44 +218,24 @@ function updateHandler({
 }): RequestHandlerProducer {
   return async (req, res, options) => {
     if (!options) {
-      send(res, 500, {
-        error: "no_options",
-        message: "No options provided",
-      });
-
-      return;
+      return send(res, 400, "No options provided");
     }
 
-    const { platform, version } = options;
-
-    if (!valid(version)) {
-      send(res, 500, {
-        error: "version_invalid",
-        message: "The specified version is not SemVer-compatible",
-      });
-
-      return;
+    if (!valid(options.version)) {
+      return send(res, 400, "The specified version is not SemVer-compatible");
     }
 
-    const resolvedPlatform = resolvePlatform(platform);
+    const platform = getPlatform(options.platform);
 
-    if (!resolvedPlatform) {
-      send(res, 500, {
-        error: "invalid_platform",
-        message: "The specified platform is not valid",
-      });
-
-      return;
+    if (!platform) {
+      return send(res, 400, "The specified platform is not valid");
     }
 
     // Get the latest version from the cache
     const latest = await cache.loadCache();
 
-    if (!latest.platforms || !latest.platforms[resolvedPlatform]) {
-      res.statusCode = 204;
-      res.end();
-
-      return;
+    if (!latest.platforms || !latest.platforms.has(platform)) {
+      return send(res, 204, "No updates available");
     }
 
     // Previously, we were checking if the latest version is
@@ -277,34 +251,46 @@ function updateHandler({
     if (
       latest.version &&
       config.url &&
-      compare(latest.version, version) !== 0
+      compare(latest.version, options.version) !== 0
     ) {
-      const { notes, pub_date } = latest;
-
-      const patchedUrl = config.url.startsWith("https://")
+      const httpsUrl = config.url.startsWith("https://")
         ? config.url
         : `https://${config.url}`;
 
+      if (
+        config.token &&
+        typeof config.token === "string" &&
+        config.token.length > 0
+      ) {
+        const responseData = {
+          name: latest.version,
+          notes: latest.notes,
+          pub_date: latest.pubDate,
+          url: `${httpsUrl}/download/${platform}?update=true`,
+        };
+
+        console.log("RESPONSE DATA:", responseData);
+        return send(res, 200, responseData);
+      }
+
+      const asset = latest.platforms.get(platform);
+
+      if (!asset) {
+        return send(res, 204, "No updates available");
+      }
+
       const responseData = {
         name: latest.version,
-        notes,
-        pub_date,
-        url:
-          config.token &&
-          typeof config.token === "string" &&
-          config.token.length > 0
-            ? `${patchedUrl}/download/${resolvedPlatform}?update=true`
-            : latest.platforms[resolvedPlatform].url,
+        notes: latest.notes,
+        pub_date: latest.pubDate,
+        url: asset.url,
       };
 
       console.log("RESPONSE DATA:", responseData);
-      send(res, 200, responseData);
-
-      return;
+      return send(res, 200, responseData);
     }
 
-    res.statusCode = 204;
-    res.end();
+    return send(res, 204, "No updates available");
   };
 }
 
@@ -317,12 +303,7 @@ function updateWin32Handler({
 }): RequestHandlerProducer {
   return async (req, res, options) => {
     if (!options) {
-      send(res, 500, {
-        error: "no_options",
-        message: "No options provided",
-      });
-
-      return;
+      return send(res, 500, "No options provided");
     }
 
     const { filename } = options;
@@ -332,48 +313,35 @@ function updateWin32Handler({
 
     if (filename.toLowerCase().startsWith("releases")) {
       if (!latest.files || !latest.files.RELEASES) {
-        res.statusCode = 204;
-        res.end();
-
-        return;
+        return send(res, 204, "No RELEASES file available");
       }
 
       const content = latest.files.RELEASES;
       console.log("RESPONSE DATA:", content);
 
-      res.writeHead(200, {
-        "content-length": Buffer.byteLength(content, "utf8"),
-        "content-type": "application/octet-stream",
-      });
-
-      res.end(content);
+      return send(res, 200, content);
     } else if (filename.toLowerCase().endsWith("nupkg")) {
-      if (!latest.platforms || !latest.platforms["nupkg"]) {
-        res.statusCode = 204;
-        res.end();
-
-        return;
+      if (!latest.platforms || !latest.platforms.has("nupkg-universal")) {
+        return send(res, 204, "No nupkg available");
       }
 
-      const asset = latest.platforms["nupkg"];
+      const asset = latest.platforms.get("nupkg-universal");
+
+      if (!asset) {
+        return send(res, 204, "No nupkg asset available");
+      }
 
       if (
         config.token &&
         typeof config.token === "string" &&
         config.token.length > 0
       ) {
-        if (!asset) return;
-        proxyPrivateDownload(config.token, asset.api_url, res);
-        return;
+        return proxyPrivateDownload(config.token, asset.api_url, res);
       }
 
-      res.writeHead(302, {
-        Location: asset.url,
-      });
-      res.end();
+      return send(res, 302, { Location: asset.url });
     } else {
-      res.statusCode = 400;
-      res.end();
+      return send(res, 400, "Invalid filename");
     }
   };
 }
@@ -394,7 +362,7 @@ function overviewHandler({
       const details = {
         account: config.account,
         repository: config.repository,
-        date: formatDistanceToNow(new Date(latest.pub_date || ""), {
+        date: formatDistanceToNow(new Date(latest.pubDate || ""), {
           addSuffix: true,
         }),
         files: latest.platforms,
@@ -404,10 +372,10 @@ function overviewHandler({
         github: `https://github.com/${config.account}/${config.repository}`,
       };
 
-      send(res, 200, render(details));
+      return send(res, 200, render(details));
     } catch (err) {
       console.error(err);
-      send(res, 500, "Error reading overview file");
+      return send(res, 500, "Error reading overview file");
     }
   };
 }
@@ -429,13 +397,10 @@ async function proxyPrivateDownload(
     Authorization: `Bearer ${token}`,
   };
   const options: RequestInit = { headers, redirect };
-
   const assetRes = await fetch(apiUrl, options);
   const location = assetRes.headers.get("Location");
   if (!location) {
-    send(res, 500, "The asset URL is not valid");
-    return;
+    return send(res, 500, "The asset URL is not valid");
   }
-  res.setHeader("Location", location);
-  send(res, 302);
+  return send(res, 302, { Location: location });
 }
