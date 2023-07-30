@@ -9,7 +9,7 @@ import path from "path";
 import { compare, valid } from "semver";
 import { parse } from "url";
 
-import { HazelCache } from "./cache.js";
+import { CarrotCache } from "./cache.js";
 import { Platform, getPlatform, guessPlatform } from "./utils.js";
 
 type RequestHandlerProducer = (
@@ -27,9 +27,9 @@ export interface Config {
   url?: string;
 }
 
-export function hazel(config: Config): RequestHandler {
+export function carrots(config: Config): RequestHandler {
   // Create a new cache instance
-  const cache = new HazelCache(config);
+  const cache = new CarrotCache(config);
 
   // Set up routes and handlers
   const routes = [
@@ -104,7 +104,7 @@ function downloadHandler({
   cache,
   config,
 }: {
-  cache: HazelCache;
+  cache: CarrotCache;
   config: Config;
 }): RequestHandlerProducer {
   return async (req, res) => {
@@ -117,15 +117,15 @@ function downloadHandler({
     // Best guess for platform based on user agent
     if (userAgent.isMac) {
       if (isUpdate) {
-        platform = "zip-arm64";
+        platform = "zip_arm64";
       } else {
-        platform = "dmg-arm64";
+        platform = "dmg_arm64";
       }
     } else if (userAgent.isWindows) {
       if (isUpdate) {
-        platform = "nupkg-x64";
+        platform = "nupkg_x64";
       } else {
-        platform = "exe-x64";
+        platform = "exe_x64";
       }
     }
 
@@ -157,7 +157,7 @@ function downloadPlatformHandler({
   cache,
   config,
 }: {
-  cache: HazelCache;
+  cache: CarrotCache;
   config: Config;
 }): RequestHandlerProducer {
   return async (req, res, options) => {
@@ -213,7 +213,7 @@ function updateHandler({
   cache,
   config,
 }: {
-  cache: HazelCache;
+  cache: CarrotCache;
   config: Config;
 }): RequestHandlerProducer {
   return async (req, res, options) => {
@@ -298,7 +298,7 @@ function updateWin32Handler({
   cache,
   config,
 }: {
-  cache: HazelCache;
+  cache: CarrotCache;
   config: Config;
 }): RequestHandlerProducer {
   return async (req, res, options) => {
@@ -321,11 +321,11 @@ function updateWin32Handler({
 
       return send(res, 200, content);
     } else if (filename.toLowerCase().endsWith("nupkg")) {
-      if (!latest.platforms || !latest.platforms.has("nupkg-universal")) {
+      if (!latest.platforms || !latest.platforms.has("nupkg_universal")) {
         return send(res, 204, "No nupkg available");
       }
 
-      const asset = latest.platforms.get("nupkg-universal");
+      const asset = latest.platforms.get("nupkg_universal");
 
       if (!asset) {
         return send(res, 204, "No nupkg asset available");
@@ -350,7 +350,7 @@ function overviewHandler({
   cache,
   config,
 }: {
-  cache: HazelCache;
+  cache: CarrotCache;
   config: Config;
 }): RequestHandlerProducer {
   return async (req, res) => {

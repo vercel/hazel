@@ -1,7 +1,7 @@
 // This file is used for Vercel to deploy the API
-import { hazel } from "../lib/index.js";
+import { carrots } from "../lib/index.js";
 
-export default hazel({
+export default carrots({
   interval: process.env.INTERVAL,
   account: process.env.ACCOUNT,
   repository: process.env.REPOSITORY,

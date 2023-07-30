@@ -1,10 +1,10 @@
-# Hazel
+# Carrots
 
 ![TypeScript](https://shields.io/badge/TypeScript-3178C6?logo=TypeScript&logoColor=FFF&style=flat-square)
 ![Prettier](https://shields.io/badge/Prettier-ff69b4?logo=Prettier&logoColor=FFF&style=flat-square)
 ![NextJS](https://shields.io/badge/Vercel-000?logo=Vercel&logoColor=FFF&style=flat-square)
 
-> This is a fork of the excellent [Hazel](https://github.com/vercel/hazel) project updated to work with TypeScript and the current Vercel API. It is being used to update [Horse Browser](https://browser.horse).
+> This is a fork of the excellent [Hazel](https://github.com/vercel/hazel) project updated to work with TypeScript and the current Vercel API. It is renamed to Carrots since it feeds updates to [Horse](https://browser.horse).
 
 This project lets you deploy an update server for [Electron](https://www.electronjs.org) apps with ease: You only need to click a button.
 
@@ -20,9 +20,9 @@ The result will be faster and more lightweight than any other solution out there
 
 ## Usage
 
-Open this link in a new tab to deploy Hazel on [Vercel](https://vercel.com):
+Open this link in a new tab to deploy Carrots on [Vercel](https://vercel.com):
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FPascalPixel%2Fhazel&env=ACCOUNT,REPOSITORY&envDescription=Enter%20your%20GitHub%20user%2Forg%20slug%20as%20ACCOUNT%20and%20the%20name%20of%20the%20repository%20that%20contains%20your%20Electron%20app%20as%20REPOSITORY.&project-name=hazel&repository-name=hazel)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FPascalPixel%2Fcarrots&env=ACCOUNT,REPOSITORY&envDescription=Enter%20your%20GitHub%20user%2Forg%20slug%20as%20ACCOUNT%20and%20the%20name%20of%20the%20repository%20that%20contains%20your%20Electron%20app%20as%20REPOSITORY.&project-name=carrots&repository-name=carrots)
 
 Once it's deployed, paste the deployment address into your code (please keep in mind that updates should only occur in the production version of the app, not while developing):
 
@@ -37,7 +37,7 @@ autoUpdater.setFeedURL({ url })
 
 That's it! :white_check_mark:
 
-From now on, the auto updater will ask your Hazel deployment for updates!
+From now on, the auto updater will ask your Carrots deployment for updates!
 
 ## Options
 
@@ -50,7 +50,7 @@ The following environment variables can be used optionally:
 
 ## Statistics
 
-Since Hazel routes all the traffic for downloading the actual application files to [GitHub Releases](https://help.github.com/articles/creating-releases/), you can use their API to determine the download count for a certain release.
+Since Carrots routes all the traffic for downloading the actual application files to [GitHub Releases](https://help.github.com/articles/creating-releases/), you can use their API to determine the download count for a certain release.
 
 As an example, check out the [latest Hyper release](https://api.github.com/repos/vercel/hyper/releases/latest) and search for `mac.zip`. You'll find a release containing a sub property named `download_count` with the amount of downloads as its value.
 
@@ -86,22 +86,22 @@ Since the [Windows version](https://github.com/Squirrel/Squirrel.Windows) of Squ
 
 <!-- ## Programmatic Usage
 
-You can add Hazel to an existing HTTP server, if you want. For example, this will allow you to implement custom analytics on certain paths.
+You can add Carrots to an existing HTTP server, if you want. For example, this will allow you to implement custom analytics on certain paths.
 
 ```js
-import hazel from "@PascalPixel/hazel";
+import carrots from "@PascalPixel/carrots";
 
 http.createServer((req, res) => {
-  hazel(req, res);
+  carrots(req, res);
 });
 ``` -->
 
 ## Contributing
 
 1. [Fork](https://help.github.com/articles/fork-a-repo/) this repository to your own GitHub account and then [clone](https://help.github.com/articles/cloning-a-repository/) it to your local device
-2. Move into the directory of your clone: `cd hazel`
+2. Move into the directory of your clone: `cd carrots`
 3. Install [Vercel CLI](https://vercel.com/cli) and run the development server: `vercel dev`
 
 ## Credits
 
-Huge thanks to Leo Lamprecht ([@notquiteleo](https://twitter.com/notquiteleo)) for creating the original Hazel.
+Huge thanks to Leo Lamprecht ([@notquiteleo](https://twitter.com/notquiteleo)) for creating the original Hazel that Carrots is forked from.

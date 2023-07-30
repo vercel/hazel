@@ -2,12 +2,12 @@ import { createServer } from "http";
 import { serve } from "micro";
 import listen from "test-listen";
 
-import { hazel } from "./index.js";
+import { carrots } from "./index.js";
 
-describe("hazel", () => {
-  it("should start hazel without errors", async () => {
+describe("carrots", () => {
+  it("should start carrots without errors", async () => {
     const config = { account: "vercel", repository: "hyper" };
-    const server = createServer(serve(hazel(config)));
+    const server = createServer(serve(carrots(config)));
     await listen(server);
     server.close();
   });

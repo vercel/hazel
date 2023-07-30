@@ -24,7 +24,7 @@ interface Latest {
   };
 }
 
-export class HazelCache {
+export class CarrotCache {
   config: Config;
   latest: Latest = {
     version: null,
