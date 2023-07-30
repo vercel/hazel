@@ -22,23 +22,10 @@ describe("cache", () => {
     }).toThrow(/URL/);
   });
 
-  it("should run without errors", () => {
-    const config = {
-      account: "vercel",
-      repository: "hyper",
-      token: process.env.TOKEN,
-      url: process.env.URL,
-    };
-
-    new CarrotCache(config);
-  });
-
   it("should refresh the cache", async () => {
     const config = {
       account: "vercel",
       repository: "hyper",
-      token: process.env.TOKEN,
-      url: process.env.URL,
     };
 
     const cache = new CarrotCache(config);

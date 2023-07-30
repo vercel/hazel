@@ -10,7 +10,7 @@ import { compare, valid } from "semver";
 import { parse } from "url";
 
 import { CarrotCache } from "./cache.js";
-import { Platform, getPlatform, guessPlatform } from "./utils.js";
+import { getPlatform, guessPlatform } from "./utils.js";
 
 type RequestHandlerProducer = (
   req: IncomingMessage,
@@ -109,36 +109,48 @@ function downloadHandler({
 }): RequestHandlerProducer {
   return async (req, res) => {
     const params = parse(req.url || "", true).query;
-    const isUpdate = params && params.update;
+    const isUpdate = !!params?.update;
     const userAgent = expressUserAgent.parse(req.headers["user-agent"] || "");
 
-    let platform: Platform | null = null;
+    let platformGuess: string = "unknown";
 
     // Best guess for platform based on user agent
     if (userAgent.isMac) {
       if (isUpdate) {
-        platform = "zip_arm64";
+        platformGuess = "zip_arm64";
       } else {
-        platform = "dmg_arm64";
+        platformGuess = "dmg_arm64";
       }
     } else if (userAgent.isWindows) {
       if (isUpdate) {
-        platform = "nupkg_x64";
+        platformGuess = "nupkg_x64";
       } else {
-        platform = "exe_x64";
+        platformGuess = "exe_x64";
       }
+    }
+
+    // Get the platform from the user input platform
+    let platform = getPlatform(platformGuess);
+
+    // If the platform is not valid, try to guess it
+    if (!platform) {
+      platform = guessPlatform(platformGuess, isUpdate);
+    }
+
+    if (!platform) {
+      return send(res, 500, "No download available for your platform!");
     }
 
     const { platforms } = await cache.loadCache();
 
     if (!platform || !platforms || !platforms.has(platform)) {
-      return send(res, 404, "No download available for your platform!");
+      return send(res, 500, "No download available for your platform!");
     }
 
     const asset = platforms.get(platform);
 
     if (!asset) {
-      return send(res, 404, "No download available for your platform!");
+      return send(res, 500, "No download available for your platform!");
     }
 
     if (
@@ -169,17 +181,18 @@ function downloadPlatformHandler({
     }
 
     const params = parse(req.url || "", true).query;
+    const isUpdate = !!params?.update;
 
     // Get the platform from the user input platform
     let platform = getPlatform(options.platform);
 
     // If the platform is not valid, try to guess it
     if (!platform) {
-      platform = guessPlatform(options.platform, !!params?.update);
+      platform = guessPlatform(options.platform, isUpdate);
     }
 
     if (!platform) {
-      return send(res, 400, "The specified platform is not valid");
+      return send(res, 500, "No download available for your platform!");
     }
 
     // Get the latest version from the cache
@@ -187,13 +200,13 @@ function downloadPlatformHandler({
     console.log("CACHE: ", latest);
 
     if (!latest.platforms || !latest.platforms.has(platform)) {
-      return send(res, 404, "No download available for your platform");
+      return send(res, 500, "No download available for your platform!");
     }
 
     const asset = latest.platforms.get(platform);
 
     if (!asset) {
-      return send(res, 404, "No download available for your platform");
+      return send(res, 500, "No download available for your platform!");
     }
 
     if (
@@ -220,15 +233,20 @@ function updateHandler({
     if (!options) {
       return send(res, 400, "No options provided");
     }
-
     if (!valid(options.version)) {
       return send(res, 400, "The specified version is not SemVer-compatible");
     }
 
-    const platform = getPlatform(options.platform);
+    // Get the platform from the user input platform
+    let platform = getPlatform(options.platform);
+
+    // If the platform is not valid, try to guess it
+    if (!platform) {
+      platform = guessPlatform(options.platform, true);
+    }
 
     if (!platform) {
-      return send(res, 400, "The specified platform is not valid");
+      return send(res, 500, "The specified platform is not valid");
     }
 
     // Get the latest version from the cache
@@ -341,7 +359,7 @@ function updateWin32Handler({
 
       return send(res, 302, { Location: asset.url });
     } else {
-      return send(res, 400, "Invalid filename");
+      return send(res, 500, "No download available for your platform!");
     }
   };
 }

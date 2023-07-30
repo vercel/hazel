@@ -34,6 +34,7 @@ describe("server", () => {
 
   it("should show the homepage", async () => {
     const res = await fetch(`${address}/`);
+    expect(res.status).toEqual(200);
 
     const disp = res.headers.get("content-disposition");
     expect(disp).toBeNull();
@@ -44,6 +45,7 @@ describe("server", () => {
 
   it("should not allow download without a user agent", async () => {
     const res = await fetch(`${address}/download`);
+    expect(res.status).toEqual(500);
 
     const disp = res.headers.get("content-disposition");
     expect(disp).toBeNull();
@@ -56,6 +58,7 @@ describe("server", () => {
     const res = await fetch(`${address}/download`, {
       headers: { "User-Agent": UA_UBUNTU },
     });
+    expect(res.status).toEqual(500);
 
     const disp = res.headers.get("content-disposition");
     expect(disp).toBeNull();
@@ -68,6 +71,7 @@ describe("server", () => {
     const res = await fetch(`${address}/download`, {
       headers: { "User-Agent": UA_MACINTOSH },
     });
+    expect(res.status).toEqual(302);
 
     const disp = res.headers.get("content-disposition");
     expect(disp).toBeDefined();
@@ -80,6 +84,7 @@ describe("server", () => {
     const res = await fetch(`${address}/download`, {
       headers: { "User-Agent": UA_WINDOWS },
     });
+    expect(res.status).toEqual(302);
 
     const disp = res.headers.get("content-disposition");
     expect(disp).toBeDefined();
@@ -90,6 +95,7 @@ describe("server", () => {
 
   it("should allow deb download", async () => {
     const res = await fetch(`${address}/download/deb`);
+    expect(res.status).toEqual(302);
 
     const disp = res.headers.get("content-disposition");
     expect(disp).toBeDefined();
@@ -100,6 +106,7 @@ describe("server", () => {
 
   it("should provide updates for valid version", async () => {
     const res = await fetch(`${address}/update/darwin/${VALID_VERSION}`);
+    expect(res.status).toEqual(204);
 
     const disp = res.headers.get("content-disposition");
     expect(disp).toBeDefined();
@@ -110,26 +117,19 @@ describe("server", () => {
 
   it("should not provide updates for invalid version", async () => {
     const res = await fetch(`${address}/update/darwin/${INVALID_VERSION}`);
-
-    const status = res.status;
-    expect(status).toBe(500);
+    expect(res.status).toBe(500);
   });
 
   it("should not provide updates for invalid platform", async () => {
     const res = await fetch(`${address}/update/x/${VALID_VERSION}`);
-
-    const status = res.status;
-    expect(status).toBe(500);
+    expect(res.status).toBe(500);
   });
 
   it("should return RELEASES for valid version", async () => {
     const res = await fetch(
       `${address}/update/win32/${VALID_VERSION}/RELEASES`,
     );
-
-    // No RELEASES found
-    const status = res.status;
-    expect(status).toBe(204);
+    expect(res.status).toBe(204);
 
     // RELEASES found returns stream
     // const status = res.status;
@@ -140,8 +140,6 @@ describe("server", () => {
 
   it("should return 404 for non-existent route", async () => {
     const res = await fetch(`${address}/non-existent-route`);
-
-    const status = res.status;
-    expect(status).toBe(404);
+    expect(res.status).toBe(404);
   });
 });
