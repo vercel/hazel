@@ -359,14 +359,45 @@ function overviewHandler({
     try {
       const render = await prepareView();
 
-      const details = {
-        account: config.account,
-        repository: config.repository,
+      const files: {
+        [key: string]: {
+          name: string;
+          api_url: string;
+          url: string;
+          content_type: string;
+          size: number;
+        };
+      } = {};
+
+      for (const [key, value] of latest.platforms) {
+        files[key] = value;
+      }
+
+      const details: {
+        account: string;
+        repository: string;
+        date: string;
+        files: {
+          [key: string]: {
+            name: string;
+            api_url: string;
+            url: string;
+            content_type: string;
+            size: number;
+          };
+        };
+        version: string;
+        releaseNotes: string;
+        allReleases: string;
+        github: string;
+      } = {
+        account: config.account || "",
+        repository: config.repository || "",
         date: formatDistanceToNow(new Date(latest.pubDate || ""), {
           addSuffix: true,
         }),
-        files: latest.platforms,
-        version: latest.version,
+        files,
+        version: latest.version || "",
         releaseNotes: `https://github.com/${config.account}/${config.repository}/releases/tag/${latest.version}`,
         allReleases: `https://github.com/${config.account}/${config.repository}/releases`,
         github: `https://github.com/${config.account}/${config.repository}`,
