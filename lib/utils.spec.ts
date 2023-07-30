@@ -69,6 +69,22 @@ it("should try to guess the correct platform", () => {
   expect(g("win32-ia32", true)).toBe("nupkg_universal");
   expect(g("win32-arm64", true)).toBe("nupkg_universal");
 
+  // Very common aliases
+  expect(g("darwin")).toBe("dmg_x64");
+  expect(g("darwin_arm64")).toBe("dmg_arm64");
+  expect(g("linux")).toBe("deb_x64");
+  expect(g("linux_arm64")).toBe("deb_arm64");
+  expect(g("win32")).toBe("exe_x64");
+  expect(g("win32_arm64")).toBe("exe_arm64");
+
+  // Very common aliases (update)
+  expect(g("darwin", true)).toBe("zip_x64");
+  expect(g("darwin_arm64", true)).toBe("zip_arm64");
+  expect(g("linux", true)).toBe("deb_x64");
+  expect(g("linux_arm64", true)).toBe("deb_arm64");
+  expect(g("win32", true)).toBe("nupkg_universal");
+  expect(g("win32_arm64", true)).toBe("nupkg_universal");
+
   // Common aliases
   expect(g("mac")).toBe("dmg_x64");
   expect(g("mac", true)).toBe("zip_x64");
