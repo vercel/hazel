@@ -33,10 +33,10 @@
     "@types/test-listen": "^1.1.0",
     "@typescript-eslint/eslint-plugin": "^6.2.0",
     "@vercel/node": "^2.15.6",
+    "async-listen": "^3.0.1",
     "cross-env": "^7.0.3",
     "eslint": "^8.45.0",
     "prettier": "^3.0.0",
-    "test-listen": "^1.1.0",
     "ts-jest": "^29.1.1",
     "typescript": "^5.1.6"
   }
