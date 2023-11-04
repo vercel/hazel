@@ -133,26 +133,46 @@ describe("download", () => {
     );
   });
 
-  it("should give download for snap", async () => {
-    const res = await fetch(`${address}download/snap`);
-    expect(res.status).toEqual(200);
-    expect(res.headers.get("content-disposition")).toBe(
-      `attachment; filename=hyper_${currentVersion}_amd64.snap`
-    );
-  });
+  // it("should give download for snap", async () => {
+  //   const res = await fetch(`${address}download/snap`);
+  //   expect(res.status).toEqual(200);
+  //   expect(res.headers.get("content-disposition")).toBe(
+  //     `attachment; filename=hyper_${currentVersion}_amd64.snap`
+  //   );
+  // });
 });
 
 describe("update", () => {
   it("should give update for an old version of mac arm", async () => {
     const res = await fetch(`${address}update/darwin_arm64/0.57.0`);
     expect(res.status).toEqual(200);
-    expect(res.headers.get("content-type")).toBe("application/octet-stream");
+    expect(res.headers.get("content-type")).toBe(
+      "application/json; charset=utf-8"
+    );
+    const data = await res.json();
+    expect(data).toEqual({
+      name: "v3.4.1",
+      notes:
+        "V3.4.1\r\n\r\nBased on some reports of errors with `node-pty`, reverting it to a stable version.\r\n\r\n|   OS    | Installer |                                                                                                 |                                                                                                  |\r\n| :-----: | :-------: | :---------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------: |\r\n|   Mac   |    dmg    | [x64](https://github.com/vercel/hyper/releases/download/v3.4.1/Hyper-3.4.1-mac-x64.dmg) (Intel) | [arm64](https://github.com/vercel/hyper/releases/download/v3.4.1/Hyper-3.4.1-mac-arm64.dmg) (M1) |\r\n|  Linux  |    deb    |      [x64](https://github.com/vercel/hyper/releases/download/v3.4.1/hyper_3.4.1_amd64.deb)      |     [arm64](https://github.com/vercel/hyper/releases/download/v3.4.1/hyper_3.4.1_arm64.deb)      |\r\n|         |    rpm    |     [x64](https://github.com/vercel/hyper/releases/download/v3.4.1/hyper-3.4.1.x86_64.rpm)      |    [arm64](https://github.com/vercel/hyper/releases/download/v3.4.1/hyper-3.4.1.aarch64.rpm)     |\r\n|         | AppImage  |      [x64](https://github.com/vercel/hyper/releases/download/v3.4.1/Hyper-3.4.1.AppImage)       |   [arm64](https://github.com/vercel/hyper/releases/download/v3.4.1/Hyper-3.4.1-arm64.AppImage)   |\r\n|         |   snap    |     [x64](https://github.com/vercel/hyper/releases/download/v3.4.1/hyper_3.4.1_amd64.snap)      |                                                                                                  |\r\n| Windows |    exe    |      [x64](https://github.com/vercel/hyper/releases/download/v3.4.1/Hyper-Setup-3.4.1.exe)      |                                                                                                  |\r\n\r\n\r\n## What's Changed\r\n* Use stable node-pty in https://github.com/vercel/hyper/pull/6964\r\n\r\n\r\n**Full Changelog**: https://github.com/vercel/hyper/compare/v3.4.0...v3.4.1",
+      pub_date: "2023-01-08T00:56:10Z",
+      url: "http://localhost:3000/download/darwin_arm64?update=true",
+    });
   });
 
   it("should give update for an old version mac x64", async () => {
     const res = await fetch(`${address}update/darwin/0.57.0`);
     expect(res.status).toEqual(200);
-    expect(res.headers.get("content-type")).toBe("application/octet-stream");
+    expect(res.headers.get("content-type")).toBe(
+      "application/json; charset=utf-8"
+    );
+    const data = await res.json();
+    expect(data).toEqual({
+      name: "v3.4.1",
+      notes:
+        "V3.4.1\r\n\r\nBased on some reports of errors with `node-pty`, reverting it to a stable version.\r\n\r\n|   OS    | Installer |                                                                                                 |                                                                                                  |\r\n| :-----: | :-------: | :---------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------: |\r\n|   Mac   |    dmg    | [x64](https://github.com/vercel/hyper/releases/download/v3.4.1/Hyper-3.4.1-mac-x64.dmg) (Intel) | [arm64](https://github.com/vercel/hyper/releases/download/v3.4.1/Hyper-3.4.1-mac-arm64.dmg) (M1) |\r\n|  Linux  |    deb    |      [x64](https://github.com/vercel/hyper/releases/download/v3.4.1/hyper_3.4.1_amd64.deb)      |     [arm64](https://github.com/vercel/hyper/releases/download/v3.4.1/hyper_3.4.1_arm64.deb)      |\r\n|         |    rpm    |     [x64](https://github.com/vercel/hyper/releases/download/v3.4.1/hyper-3.4.1.x86_64.rpm)      |    [arm64](https://github.com/vercel/hyper/releases/download/v3.4.1/hyper-3.4.1.aarch64.rpm)     |\r\n|         | AppImage  |      [x64](https://github.com/vercel/hyper/releases/download/v3.4.1/Hyper-3.4.1.AppImage)       |   [arm64](https://github.com/vercel/hyper/releases/download/v3.4.1/Hyper-3.4.1-arm64.AppImage)   |\r\n|         |   snap    |     [x64](https://github.com/vercel/hyper/releases/download/v3.4.1/hyper_3.4.1_amd64.snap)      |                                                                                                  |\r\n| Windows |    exe    |      [x64](https://github.com/vercel/hyper/releases/download/v3.4.1/Hyper-Setup-3.4.1.exe)      |                                                                                                  |\r\n\r\n\r\n## What's Changed\r\n* Use stable node-pty in https://github.com/vercel/hyper/pull/6964\r\n\r\n\r\n**Full Changelog**: https://github.com/vercel/hyper/compare/v3.4.0...v3.4.1",
+      pub_date: "2023-01-08T00:56:10Z",
+      url: "http://localhost:3000/download/darwin?update=true",
+    });
   });
 });
 

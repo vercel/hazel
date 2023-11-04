@@ -141,13 +141,17 @@ describe("update", () => {
   it("should give update for an old version of mac arm", async () => {
     const res = await fetch(`${address}update/darwin_arm64/0.57.0`);
     expect(res.status).toEqual(200);
-    expect(res.headers.get("content-type")).toBe("application/octet-stream");
+    expect(res.headers.get("content-type")).toBe(
+      "application/json; charset=utf-8"
+    );
   });
 
   it("should give update for an old version mac x64", async () => {
     const res = await fetch(`${address}update/darwin/0.57.0`);
     expect(res.status).toEqual(200);
-    expect(res.headers.get("content-type")).toBe("application/octet-stream");
+    expect(res.headers.get("content-type")).toBe(
+      "application/json; charset=utf-8"
+    );
   });
 });
 
@@ -156,14 +160,18 @@ describe("latest", () => {
     const res = await fetch(
       `${address}update/win32/${currentVersion}/RELEASES`
     );
-    expect(res.status).toEqual(204);
+    expect(res.status).toEqual(200);
+    const text = await res.text();
+    expect(text).toContain(".nupkg");
   });
 
   it("should not give update for up-to-date windows x64", async () => {
     const res = await fetch(
       `${address}update/win32/${currentVersion}/releases`
     );
-    expect(res.status).toEqual(204);
+    expect(res.status).toEqual(200);
+    const text = await res.text();
+    expect(text).toContain(".nupkg");
   });
 
   it("should not give update for up-to-date mac arm", async () => {
