@@ -1,107 +1,66 @@
 # Carrots
 
-![TypeScript](https://shields.io/badge/TypeScript-3178C6?logo=TypeScript&logoColor=FFF&style=flat-square)
-![Prettier](https://shields.io/badge/Prettier-ff69b4?logo=Prettier&logoColor=FFF&style=flat-square)
-![NextJS](https://shields.io/badge/Vercel-000?logo=Vercel&logoColor=FFF&style=flat-square)
+TypeScript-based Electron downloads and updates server that uses GitHub to serve files.
 
-> This is a fork of the excellent [Hazel](https://github.com/vercel/hazel) project updated to work with TypeScript and the current Vercel API. It is renamed to Carrots since it feeds updates to [Horse](https://browser.horse).
+## Setup
 
-This project lets you deploy an update server for [Electron](https://www.electronjs.org) apps with ease: You only need to click a button.
+1. Create a `.env` file in the root with these variables;
+   1. `ACCOUNT` Repository account name
+   2. `REPOSITORY` Repository name
+   3. `TOKEN` (optional) GitHub Private Token for private repos
 
-The result will be faster and more lightweight than any other solution out there! :rocket:
+## Development
 
-- Recommended by Electron [here](https://www.electronjs.org/docs/tutorial/updates#deploying-an-update-server)
-- Built on top of [micro](https://github.com/vercel/micro), the tiniest HTTP framework for Node.js
-- Pulls the latest release data from [GitHub Releases](https://help.github.com/articles/creating-releases/) and caches it in memory
-- Refreshes the cache every **15 minutes** (custom interval [possible](#options))
-- When asked for an update, it returns the link to the GitHub asset directly (saves bandwidth)
-- Supports **Linux**, **macOS** and **Windows** apps
-- Scales infinitely on [Vercel](https://vercel.com) Serverless Functions
+1. `pnpm i`
+2. `vercel dev`
 
-## Usage
+## Testing
 
-Open this link in a new tab to deploy Carrots on [Vercel](https://vercel.com):
+- Adjust the `private.test.ts` to match your own repo's release files
+- `pnpm test`
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FPascalPixel%2Fcarrots&env=ACCOUNT,REPOSITORY&envDescription=Enter%20your%20GitHub%20user%2Forg%20slug%20as%20ACCOUNT%20and%20the%20name%20of%20the%20repository%20that%20contains%20your%20Electron%20app%20as%20REPOSITORY.&project-name=carrots&repository-name=carrots)
+## Production
 
-Once it's deployed, paste the deployment address into your code (please keep in mind that updates should only occur in the production version of the app, not while developing):
-
-```js
-const { app, autoUpdater } = require('electron')
-
-const server = <your-deployment-url>
-const url = `${server}/update/${process.platform}/${app.getVersion()}`
-
-autoUpdater.setFeedURL({ url })
-```
-
-That's it! :white_check_mark:
-
-From now on, the auto updater will ask your Carrots deployment for updates!
-
-## Options
-
-The following environment variables can be used optionally:
-
-- `INTERVAL`: Refreshes the cache every x minutes ([restrictions](https://developer.github.com/changes/2012-10-14-rate-limit-changes/)) (defaults to 15 minutes)
-- `PRE`: When defined with a value of `1`, only pre-releases will be cached
-- `TOKEN`: Your GitHub token (for private repos)
-- `URL`: The server's URL (for private repos - when running on [Vercel](https://vercel.com), this field is filled with the URL of the deployment automatically)
-
-## Statistics
-
-Since Carrots routes all the traffic for downloading the actual application files to [GitHub Releases](https://help.github.com/articles/creating-releases/), you can use their API to determine the download count for a certain release.
-
-As an example, check out the [latest Hyper release](https://api.github.com/repos/vercel/hyper/releases/latest) and search for `mac.zip`. You'll find a release containing a sub property named `download_count` with the amount of downloads as its value.
+- It is simply a `node.http` handler, use anywhere you like
+- Vercel can deploy and run it as-is using the provided config
 
 ## Routes
 
-### /
+- **Homepage**\
+  _Route:_ `/`\
+  _Description:_ A nice frontend to show the latest version and all downloads
+- **API**\
+  _Route:_ `/api/semver`\
+  _Description:_ An endpoint to get the latest version number
+- **Download**\
+  _Route:_ `/download/:platform`\
+  _Description:_ Downloads for most Electron platforms
+- **Electron autoUpdater**\
+  _Route:_ `/update/:platform/:version`\
+  _Description:_ Electron autoUpdater endpoint for Mac and Windows
+- **Update Metadata**\
+  _Route:_ `/update/:platform/:version/RELEASES`\
+  _Description:_ Electron autoUpdater `nupkg` endpoint for Windows
 
-Displays an overview page showing the cached repository with the different available platforms and file sizes. Links to the repo, releases, specific cached version and direct downloads for each platform are present.
+## Support
 
-### /download
+| OS      | Filetype  | As       | Supported |
+| ------- | --------- | -------- | --------- |
+| Linux   | .deb      | Download | Yes       |
+| Linux   | .rpm      | Download | Yes       |
+| Linux   | .AppImage | Download | Yes       |
+| Linux   | .snap     | Download | Yes       |
+| Linux   | .flatpak  | Download | No        |
+| Windows | .exe      | Download | Yes       |
+| Windows | .exe      | Download | No        |
+| Windows | .nupkg    | Update   | Yes       |
+| Mac     | .dmg      | Download | Yes       |
+| Mac     | .zip      | Download | Yes       |
+| Mac     | .zip      | Update   | Yes       |
 
-Automatically detects the platform/OS of the visitor by parsing the user agent and then downloads the appropriate copy of your application.
+## Thanks
 
-If the latest version of the application wasn't yet pulled from [GitHub Releases](https://help.github.com/articles/creating-releases/), it will return a message and the status code `404`. The same happens if the latest release doesn't contain a file for the detected platform.
+Shamelessly based on and made possible thanks to;
 
-### /download/:platform
-
-Accepts a platform (like "darwin" or "win32") to download the appropriate copy your app for. I generally suggest using either `process.platform` ([more](https://nodejs.org/api/process.html#process_process_platform)) or `os.platform()` ([more](https://nodejs.org/api/os.html#os_os_platform)) to retrieve this string.
-
-If the cache isn't filled yet or doesn't contain a download link for the specified platform, it will respond like `/`.
-
-### /update/:platform/:version
-
-Checks if there is an update available by reading from the cache.
-
-If the latest version of the application wasn't yet pulled from [GitHub Releases](https://help.github.com/articles/creating-releases/), it will return the `204` status code. The same happens if the latest release doesn't contain a file for the specified platform.
-
-### /update/win32/:version/RELEASES
-
-This endpoint was specifically crafted for the Windows platform (called "win32" [in Node.js](https://nodejs.org/api/process.html#process_process_platform)).
-
-Since the [Windows version](https://github.com/Squirrel/Squirrel.Windows) of Squirrel (the software that powers auto updates inside [Electron](https://www.electronjs.org)) requires access to a file named "RELEASES" when checking for updates, this endpoint will respond with a cached version of the file that contains a download link to a `.nupkg` file (the application update).
-
-<!-- ## Programmatic Usage
-
-You can add Carrots to an existing HTTP server, if you want. For example, this will allow you to implement custom analytics on certain paths.
-
-```js
-import carrots from "@PascalPixel/carrots";
-
-http.createServer((req, res) => {
-  carrots(req, res);
-});
-``` -->
-
-## Contributing
-
-1. [Fork](https://help.github.com/articles/fork-a-repo/) this repository to your own GitHub account and then [clone](https://help.github.com/articles/cloning-a-repository/) it to your local device
-2. Move into the directory of your clone: `cd carrots`
-3. Install [Vercel CLI](https://vercel.com/cli) and run the development server: `vercel dev`
-
-## Credits
-
-Huge thanks to Leo Lamprecht ([@notquiteleo](https://twitter.com/notquiteleo)) for creating the original Hazel that Carrots is forked from.
+- [vercel/hazel](https://github.com/vercel/hazel)
+- [electron/update.electronjs.org](https://github.com/electron/update.electronjs.org)
