@@ -1,5 +1,7 @@
 # Carrots
 
+> 🪳 Not ready yet, working on bugs.
+
 TypeScript-based Electron downloads and updates server that uses GitHub to serve files.
 
 ## Setup
